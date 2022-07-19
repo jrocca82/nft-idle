@@ -4,8 +4,10 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Token is IERC20, ERC20, Ownable {
+contract Currency is IERC20, ERC20, Ownable {
     uint8 private immutable _decimals;
+
+    event TokenEarned(uint256 amount, address account);
 
     constructor(
         string memory name_,
@@ -15,15 +17,10 @@ contract Token is IERC20, ERC20, Ownable {
         _decimals = decimals_;
     }
 
+    //Mint when earn (after soup is made)
     function mint(address account, uint256 amount) external onlyOwner {
         _mint(account, amount);
-    }
 
-    function burn(address account, uint256 amount) external onlyOwner {
-        _burn(account, amount);
-    }
-
-    function decimals() public view override returns (uint8) {
-        return _decimals;
+        emit TokenEarned(amount, account);
     }
 }
