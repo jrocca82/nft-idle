@@ -9,6 +9,7 @@ contract Currency is IERC20, ERC20, Ownable {
 
     event TokenEarned(uint256 amount, address account);
 
+
     constructor(
         string memory name_,
         string memory symbol_,
