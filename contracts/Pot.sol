@@ -14,6 +14,7 @@ contract Pot is ERC20, Ownable {
 
     event PurchasePot(uint256 landId, address account);
     event BurnPot(uint256 landId);
+    event MarketplaceSet(address marketplace);
 
     modifier onlyMarketplace() {
         require(msg.sender == marketplace, "Unauthorized. Marketplace only.");
@@ -28,14 +29,16 @@ contract Pot is ERC20, Ownable {
     }
 
     function setMarketplace(address _marketplace) public onlyOwner {
+        require(_marketplace != address(0), "Cannot assign marketplace to zero address");
         marketplace = _marketplace;
+        emit MarketplaceSet(_marketplace);
     }
 
     //Mint pot directly onto land
     function buyPot(uint256 landId) external payable onlyMarketplace{
-        _mint(msg.sender, 1);
         land.assignPot(landId);
         emit PurchasePot(landId, msg.sender);
+        _mint(msg.sender, 1);
     }
 
     //Remove pot from land

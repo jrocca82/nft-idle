@@ -1,5 +1,5 @@
 import { deployContract } from "../utils";
-import { Token } from "../../../build/typechain";
+import { Token } from "../../../artifacts/typechain";
 
 export const contractNames = () => ["token"];
 

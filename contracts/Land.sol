@@ -27,6 +27,8 @@ contract Land is ERC721, Ownable {
 
     event PurchaseLand(uint256 landId, address account);
 
+    event MarketplaceSet(address marketplace);
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -64,13 +66,14 @@ contract Land is ERC721, Ownable {
     }
 
     function setMarketplace(address _marketplace) public onlyOwner {
+        require(_marketplace != address(0), "Cannot assign marketplace to zero address");
         marketplace = _marketplace;
+        emit MarketplaceSet(_marketplace);
     }
 
     //Mint to caller
     function buyLand() external payable onlyMarketplace {
         uint256 landId = increasedTokenId();
-        _safeMint(msg.sender, landId);
 
         //create new LandStruct and add to lands mapping
         LandStruct storage land = lands[landId];
@@ -81,6 +84,8 @@ contract Land is ERC721, Ownable {
         land.soupId = 0;
 
         emit PurchaseLand(landId, msg.sender);
+
+        _safeMint(msg.sender, landId);
     }
 
     //Assign pot to land

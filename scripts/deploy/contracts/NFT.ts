@@ -1,6 +1,6 @@
 import { ethers as tsEthers } from "ethers";
-import { NFT__factory } from "../../../build/typechain";
-import { NFT } from "../../../build/typechain";
+import { NFT__factory } from "../../../artifacts/typechain";
+import { NFT } from "../../../artifacts/typechain";
 import { BigNumberish } from "ethers";
 import { getSignerForDeployer } from "../utils";
 

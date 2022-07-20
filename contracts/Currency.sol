@@ -19,8 +19,8 @@ contract Currency is IERC20, ERC20, Ownable {
 
     //Mint when earn (after soup is made)
     function mint(address account, uint256 amount) external onlyOwner {
-        _mint(account, amount);
-
         emit TokenEarned(amount, account);
+        
+        _mint(account, amount);
     }
 }

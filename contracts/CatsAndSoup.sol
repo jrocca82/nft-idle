@@ -18,6 +18,8 @@ contract CatsAndSoup is ERC1155, Ownable {
 
     event PurchasedItem(uint256 itemId, address account, string itemType);
 
+    event MarketplaceSet(address marketplace);
+
     modifier onlyMarketplace() {
         require(msg.sender == marketplace, "Unauthorized. Marketplace only.");
         _;
@@ -27,7 +29,9 @@ contract CatsAndSoup is ERC1155, Ownable {
     }
 
     function setMarketplace(address _marketplace) public onlyOwner {
+        require(_marketplace != address(0), "Cannot assign marketplace to zero address");
         marketplace = _marketplace;
+        emit MarketplaceSet(_marketplace);
     }
 
     function mint(uint _itemId, address _to) external onlyMarketplace {
@@ -36,12 +40,13 @@ contract CatsAndSoup is ERC1155, Ownable {
         if(_itemId <= 2){
             require(pot.balanceOf(msg.sender) > 0, "You do not have any pots to make soup in!");
         }
-        _mint(_to, _itemId, 1, "");
 
         if(_itemId <= 2) {
             emit PurchasedItem(_itemId, _to, "soup");
         } else {
             emit PurchasedItem(_itemId, _to, "cat");
         }
+
+        _mint(_to, _itemId, 1, "");
     }
 }

@@ -14,8 +14,8 @@ contract Marketplace {
     Currency private _currency;
 
     //TODO: Change prices to readable numbers with ethers.utils
-    uint256 landPrice = 50000000000000;
-    uint potPrice = 10000000000000;
+    uint256 constant landPrice = 50000000000000;
+    uint256 constant potPrice = 10000000000000;
 
     //Map item ID to price
     mapping(uint => uint) itemPrice;

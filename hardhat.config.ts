@@ -28,7 +28,7 @@ export default {
   paths: {
     sources: "./contracts",
     cache: "./cache",
-    artifacts: "./build",
+    artifacts: "./artifacts",
     tests: "./tests"
   },
   networks: {

@@ -1,5 +1,5 @@
 import { deployProxy, upgradeProxy } from "../utils";
-import { TokenUpgradeable } from "../../../build/typechain";
+import { TokenUpgradeable } from "../../../artifacts/typechain";
 
 export const contractNames = () => ["token-upgradeable"];
 
