@@ -22,14 +22,14 @@ export default {
   gasReporter: {
     enabled: true,
     currency: "ETH",
-    gasPrice: "auto",
+    gasPrice: process.env.DEPLOY_GAS_PRICE_WEI,
     showInChart: true
   },
   paths: {
     sources: "./contracts",
     cache: "./cache",
     artifacts: "./artifacts",
-    tests: "./tests"
+    tests: "./test"
   },
   networks: {
     hardhat: {

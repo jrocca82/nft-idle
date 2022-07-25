@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Land.sol";
 
 contract Pot is ERC20, Ownable {
-    uint8 private immutable _decimals;
+    uint8 private immutable _decimals = 0;
 
     Land private land;
 
@@ -25,7 +25,6 @@ contract Pot is ERC20, Ownable {
         string memory name_,
         string memory symbol_
     ) ERC20(name_, symbol_) {
-        _decimals = 0;
     }
 
     function setMarketplace(address _marketplace) public onlyOwner {
@@ -35,10 +34,10 @@ contract Pot is ERC20, Ownable {
     }
 
     //Mint pot directly onto land
-    function buyPot(uint256 landId) external payable onlyMarketplace{
+    function buyPot(uint256 landId, address purchaser) external payable onlyMarketplace{
         land.assignPot(landId);
         emit PurchasePot(landId, msg.sender);
-        _mint(msg.sender, 1);
+        _mint(purchaser, 1);
     }
 
     //Remove pot from land

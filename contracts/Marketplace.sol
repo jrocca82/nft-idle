@@ -20,6 +20,9 @@ contract Marketplace {
     //Map item ID to price
     mapping(uint => uint) itemPrice;
 
+    event Purchase(uint256 itemId, string purchaseType, address owner);
+    event StarterPackPurchase(uint256 landId, uint256 potId, address owner);
+
     constructor(Land landContract, Pot potContract, CatsAndSoup catsAndSoupContract, Currency currency) {
         require(address(landContract) != address(0));
         require(address(potContract) != address(0));
@@ -49,6 +52,9 @@ contract Marketplace {
         require(landPrice != 0, "This item is not available");
         require(_landContract.balanceOf(msg.sender) < 10, "You have the maximum number of lands");
 
+        //How to get landId here?
+        emit Purchase(0, "Land", msg.sender);
+
         _landContract.buyLand();
     }
 
@@ -59,7 +65,10 @@ contract Marketplace {
         require(potPrice != 0, "This item is not available");
         require(_potContract.balanceOf(msg.sender) < _landContract.balanceOf(msg.sender), "You do not have enough land to buy another pot");
 
-        _potContract.buyPot(_landId);
+        //Maps to landId where pot was minted to
+        emit Purchase(_landId, "Pot", msg.sender);
+
+        _potContract.buyPot(_landId, msg.sender);
     }
 
     function buyItem(uint _itemId) public payable {
@@ -68,6 +77,21 @@ contract Marketplace {
         require(sentAmount >= itemPrice[_itemId], "Not enough funds");
         require(itemPrice[_itemId] != 0, "This item is not available");
 
+        if(_itemId < 3) {
+            emit Purchase(_itemId, "Soup", msg.sender);
+        } else {
+            emit Purchase(_itemId, "Cat", msg.sender);
+        }
+
         _catsAndSoupContract.mint(_itemId, msg.sender);
+    }
+
+    function starterPack() public {
+        //Check balance-- if have a land or a pot, revert
+        require(_potContract.balanceOf(msg.sender) == 0 && _landContract.balanceOf(msg.sender) == 0, "You cannot purchase a starter pack");
+        //Give user land, pot, and cat for free
+        buyLandToken(); 
+        //Get landId to pass into next function
+        buyPotToken(0);
     }
 }

@@ -21,13 +21,15 @@ contract Land is ERC721, Ownable {
         uint256 soupId;
     }
 
-    mapping(uint256 => LandStruct) lands;
+    mapping(uint256 => LandStruct) public lands;
 
     address public marketplace;
 
     event PurchaseLand(uint256 landId, address account);
 
     event MarketplaceSet(address marketplace);
+
+    event ItemAssigned(uint256 landId, string tokenType);
 
     constructor(
         string memory name_,
@@ -44,7 +46,7 @@ contract Land is ERC721, Ownable {
 
     //Modifiers to check owners of tokens
     modifier onlyLandOwner (uint256 landId) {
-        require(lands[landId].owner == msg.sender, "You do not own this land and cannot modify it");
+        require(lands[landId].owner == msg.sender || msg.sender == marketplace, "You do not own this land and cannot modify it");
         _;
     }
 
@@ -92,6 +94,7 @@ contract Land is ERC721, Ownable {
     function assignPot (uint256 landId) public onlyLandOwner(landId){
         require(lands[landId].hasPot == false, "This land already has a pot");
         lands[landId].hasPot == true;
+        emit ItemAssigned(landId, "Pot");
         lands[landId].landType = "Workable";
     }
 
@@ -110,6 +113,7 @@ contract Land is ERC721, Ownable {
             lands[_landId].landType = "Productive";
         }
         //Assign catId to land
+        emit ItemAssigned(_landId, "Cat");
         lands[_landId].catId = _catId;
     }
 
@@ -122,6 +126,7 @@ contract Land is ERC721, Ownable {
             lands[_landId].landType = "Productive";
         }
         //Assign soupId to land
+        emit ItemAssigned(_landId, "Soup");
         lands[_landId].soupId = _soupId;
     }
 }
