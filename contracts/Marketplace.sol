@@ -8,90 +8,87 @@ import "./CatsAndSoup.sol";
 import "./Currency.sol";
 
 contract Marketplace {
-    Land private _landContract;
-    Pot private _potContract;
-    CatsAndSoup private _catsAndSoupContract;
-    Currency private _currency;
+    Pot private potContract;
+    Land private landContract;
+    Currency private currencyContract;
+    CatsAndSoup private catsAndSoupContract;
 
-    //TODO: Change prices to readable numbers with ethers.utils
-    uint256 constant landPrice = 50000000000000;
-    uint256 constant potPrice = 10000000000000;
+    uint256 public landPrice = 1 ether;
 
-    //Map item ID to price
-    mapping(uint => uint) itemPrice;
+    uint256 public potPrice = 0.1 ether;
 
-    event Purchase(uint256 itemId, string purchaseType, address owner);
-    event StarterPackPurchase(uint256 landId, uint256 potId, address owner);
+    uint256 public catPrice = 0.5 ether;
 
-    constructor(Land landContract, Pot potContract, CatsAndSoup catsAndSoupContract, Currency currency) {
-        require(address(landContract) != address(0));
-        require(address(potContract) != address(0));
-        require(address(catsAndSoupContract) != address(0));
-        require(address(currency) != address(0));
-        _landContract = landContract;
-        _potContract = potContract;
-        _catsAndSoupContract = catsAndSoupContract;
-        _currency = currency;
+    uint256 public soupPrice = 0.3 ether;
 
-        //Soup prices
-         //TODO: Change prices to readable numbers with ethers.utils
-        itemPrice[0] = 100000000000000; //Bland
-        // price[1] = 200000000000000; //Tomato
-        // price[2] = 300000000000000; //Broccoli cheddar
+    uint256 public startPackPrice = 1 ether;
 
-        //Cat prices
-        itemPrice[3] = 100000000000000; //Tabby
-        // price[4] = 200000000000000; //Persian
-        // price[5] = 300000000000000; //Sphinx
+    event Purchase(string purchaseType, address purchaser, uint256 id);
+
+    constructor(
+        Pot _potContract,
+        Land _landContract,
+        Currency _currencyContract,
+        CatsAndSoup _catsAndSoupContract
+    ) {
+        require(address(_potContract) != address(0));
+        require(address(_landContract) != address(0));
+        require(address(_currencyContract) != address(0));
+        require(address(_catsAndSoupContract) != address(0));
+
+        potContract = _potContract;
+        landContract = _landContract;
+        currencyContract = _currencyContract;
+        catsAndSoupContract = _catsAndSoupContract;
     }
 
-    function buyLandToken() public payable {
-        //TODO: Change to currency
-        uint sentAmount = msg.value;
-        require(sentAmount >= landPrice, "Not enough funds");
-        require(landPrice != 0, "This item is not available");
-        require(_landContract.balanceOf(msg.sender) < 10, "You have the maximum number of lands");
+    function buyPot(uint256 _landId) public payable {
+        require(msg.value >= potPrice);
+        require(landContract.balanceOf(msg.sender) > potContract.balanceOf(msg.sender), "You need to buy a land first");
 
-        //How to get landId here?
-        emit Purchase(0, "Land", msg.sender);
+        emit Purchase("Pot", msg.sender, _landId);
 
-        _landContract.buyLand();
+        currencyContract.transferFrom(msg.sender, address(this), potPrice);
+        potContract.mintPot(_landId, msg.sender);
     }
 
-    function buyPotToken(uint _landId) public payable {
-        //TODO: Change to currency
-        uint sentAmount = msg.value;
-        require(sentAmount >= potPrice, "Not enough funds");
-        require(potPrice != 0, "This item is not available");
-        require(_potContract.balanceOf(msg.sender) < _landContract.balanceOf(msg.sender), "You do not have enough land to buy another pot");
+    function buyLand(uint256 _landId) public payable {
+        require(msg.value >= landPrice);
 
-        //Maps to landId where pot was minted to
-        emit Purchase(_landId, "Pot", msg.sender);
+        emit Purchase("Land", msg.sender, _landId);
 
-        _potContract.buyPot(_landId, msg.sender);
+        currencyContract.transferFrom(msg.sender, address(this), landPrice);
+        landContract.buyLand(_landId, msg.sender);
     }
 
-    function buyItem(uint _itemId) public payable {
-        //TODO: Change to currency
-        uint sentAmount = msg.value;
-        require(sentAmount >= itemPrice[_itemId], "Not enough funds");
-        require(itemPrice[_itemId] != 0, "This item is not available");
+    function buyItem(uint256 _itemId) public payable {
+        require(_itemId < 2, "This item does not exist");
 
-        if(_itemId < 3) {
-            emit Purchase(_itemId, "Soup", msg.sender);
+        if (_itemId == 0) {
+            require(msg.value >= catPrice);
+            emit Purchase("Cat", msg.sender, _itemId);
+
+            currencyContract.transferFrom(msg.sender, address(this), catPrice);
         } else {
-            emit Purchase(_itemId, "Cat", msg.sender);
+            require(msg.value >= soupPrice);
+            emit Purchase("Soup", msg.sender, _itemId);
+            currencyContract.transferFrom(msg.sender, address(this), soupPrice);
         }
 
-        _catsAndSoupContract.mint(_itemId, msg.sender);
+        catsAndSoupContract.mintItem(_itemId, msg.sender);
     }
 
-    function starterPack() public {
-        //Check balance-- if have a land or a pot, revert
-        require(_potContract.balanceOf(msg.sender) == 0 && _landContract.balanceOf(msg.sender) == 0, "You cannot purchase a starter pack");
-        //Give user land, pot, and cat for free
-        buyLandToken(); 
-        //Get landId to pass into next function
-        buyPotToken(0);
+    function buyStarterPack(uint256 _landId) public payable {
+        require(landContract.balanceOf(msg.sender) == 0, "You cannot purchase a starter pack");
+        require(msg.value >= startPackPrice);
+
+        emit Purchase("Starter Pack", msg.sender, _landId);
+
+        landContract.buyLand(_landId, msg.sender);
+        potContract.mintPot(_landId, msg.sender);
+        //mint cat
+        catsAndSoupContract.mintItem(0, msg.sender);
+        //mint soup
+        catsAndSoupContract.mintItem(1, msg.sender);
     }
 }

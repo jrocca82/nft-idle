@@ -7,20 +7,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Currency is IERC20, ERC20, Ownable {
     uint8 private immutable _decimals;
 
-    event TokenEarned(uint256 amount, address account);
+    event CurrencyEarned(address _to, uint256 _amount);
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_
-    ) ERC20(name_, symbol_) {
-        _decimals = decimals_;
+    constructor(string memory _name, string memory _symbol) 
+                ERC20(_name, _symbol) 
+                {
+                    _decimals = 18;
+                }
+
+    //TODO: figure out how to limit access to this function-- onlyOwner?
+    function mintCurrency(uint256 _amount) public {
+        emit CurrencyEarned(msg.sender, _amount);
+        _mint(msg.sender, _amount);
     }
 
-    //Mint when earn (after soup is made)
-    function mint(address account, uint256 amount) external onlyOwner {
-        emit TokenEarned(amount, account);
-        
-        _mint(account, amount);
+    function decimals() public view override returns (uint8) {
+        return _decimals;
     }
 }

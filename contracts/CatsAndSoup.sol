@@ -5,48 +5,17 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Pot.sol";
 import "./Land.sol";
+import "./MarketplaceAccess.sol";
 
-contract CatsAndSoup is ERC1155, Ownable {
-    Pot private pot;
-    uint256 public constant blandSoup = 1;
-    // uint256 public constant tomatoSoup = 2;
-    // uint256 public constant broccoliCheddarSoup = 3;
-    uint256 public constant tabbyCat = 4;
-    // uint256 public constant persianCat = 5;
-    // uint256 public constant sphinxCat = 6;
-    address public marketplace;
-
-    event PurchasedItem(uint256 itemId, address account, string itemType);
-
-    event MarketplaceSet(address marketplace);
-
-    modifier onlyMarketplace() {
-        require(msg.sender == marketplace, "Unauthorized. Marketplace only.");
-        _;
-    }
+contract CatsAndSoup is ERC1155, Ownable, MarketplaceAccess {
+    uint256 public constant cat = 0;
+    uint256 public constant soup = 1;
 
     constructor() ERC1155("") {
     }
 
-    function setMarketplace(address _marketplace) public onlyOwner {
-        require(_marketplace != address(0), "Cannot assign marketplace to zero address");
-        marketplace = _marketplace;
-        emit MarketplaceSet(_marketplace);
-    }
-
-    function mint(uint _itemId, address _to) external onlyMarketplace {
-        require(_itemId > 0 && _itemId <= 6, "Invalid item ID");
-        //If soup, check for pot
-        if(_itemId <= 2){
-            require(pot.balanceOf(msg.sender) > 0, "You do not have any pots to make soup in!");
-        }
-
-        if(_itemId <= 2) {
-            emit PurchasedItem(_itemId, _to, "soup");
-        } else {
-            emit PurchasedItem(_itemId, _to, "cat");
-        }
-
+    function mintItem(uint _itemId, address _to) external onlyMarketplace {
+        require(_itemId >= 0 && _itemId <= 1, "Invalid item ID");
         _mint(_to, _itemId, 1, "");
     }
 }
