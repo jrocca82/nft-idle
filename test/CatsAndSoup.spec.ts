@@ -56,5 +56,5 @@ describe("CatsAndSoup Contract", () => {
     expect(event.marketplace).to.equal(fakeAddress);
   });
   
-  //Test minting function from marketplace tests
+  //Test minting function from Marketplace
 });

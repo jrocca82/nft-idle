@@ -1,14 +1,13 @@
 import { ethers } from "hardhat";
 import { ethers as tsEthers } from "ethers";
 import { expect } from "chai";
-import { getEventData } from "./utils";
 import { Currency, Currency__factory } from "../build/typechain";
 
 let currency: Currency;
 let deployer: tsEthers.Signer;
 let user: tsEthers.Wallet;
 
-describe("Land Contract", () => {
+describe("Currency Contract", () => {
   before(async () => {
     deployer = (await ethers.getSigners())[0];
     currency = await new Currency__factory(deployer).deploy(
@@ -32,6 +31,9 @@ describe("Land Contract", () => {
   });
 
   it("Should mint currency", async () => {
-    
+    const amount = ethers.BigNumber.from("10");
+    await currency.mintCurrency(user.address, amount);
+    const userBalance = await currency.balanceOf(user.address);
+    expect(amount).to.equal(userBalance);
   });
 });

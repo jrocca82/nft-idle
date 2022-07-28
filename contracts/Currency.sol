@@ -16,9 +16,9 @@ contract Currency is IERC20, ERC20, Ownable {
                 }
 
     //TODO: figure out how to limit access to this function-- onlyOwner?
-    function mintCurrency(uint256 _amount) public {
-        emit CurrencyEarned(msg.sender, _amount);
-        _mint(msg.sender, _amount);
+    function mintCurrency(address _userAddress, uint256 _amount) public {
+        emit CurrencyEarned(_userAddress, _amount);
+        _mint(_userAddress, _amount);
     }
 
     function decimals() public view override returns (uint8) {

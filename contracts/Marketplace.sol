@@ -80,15 +80,15 @@ contract Marketplace {
 
     function buyStarterPack(uint256 _landId) public payable {
         require(landContract.balanceOf(msg.sender) == 0, "You cannot purchase a starter pack");
-        require(msg.value >= startPackPrice);
+        require(msg.value >= startPackPrice, "Not enough ETH");
 
         emit Purchase("Starter Pack", msg.sender, _landId);
 
-        landContract.buyLand(_landId, msg.sender);
-        potContract.mintPot(_landId, msg.sender);
-        //mint cat
-        catsAndSoupContract.mintItem(0, msg.sender);
-        //mint soup
-        catsAndSoupContract.mintItem(1, msg.sender);
+        // landContract.buyLand(_landId, msg.sender);
+        // potContract.mintPot(_landId, msg.sender);
+        // //mint cat
+        // catsAndSoupContract.mintItem(0, msg.sender);
+        // //mint soup
+        // catsAndSoupContract.mintItem(1, msg.sender);
     }
 }

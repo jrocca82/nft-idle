@@ -4,12 +4,9 @@ pragma solidity ^0.8.9;
 import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./CatsAndSoup.sol";
-import "./MarketplaceAccess.sol";
 
-contract Land is ERC721A, Ownable, MarketplaceAccess {
+contract Land is ERC721A, Ownable {
     uint256 public maxSupply;
-
-    uint256 public boughtLand = 0;
 
     struct LandStruct {
         string landType;
@@ -27,6 +24,16 @@ contract Land is ERC721A, Ownable, MarketplaceAccess {
 
     CatsAndSoup private catsAndSoup;
 
+    address public _marketplace;
+
+    event MarketplaceSet(address marketplace);
+
+    modifier onlyMarketplace() {
+        require(msg.sender == _marketplace, "Unauthorized. Marketplace only.");
+        _;
+    }
+
+
     event InitialMint(uint256 quantity, address initialOwner);
 
     constructor(string memory name, string memory symbol, uint256 _maxSupply, CatsAndSoup _catsAndSoup) 
@@ -35,13 +42,19 @@ contract Land is ERC721A, Ownable, MarketplaceAccess {
         maxSupply = _maxSupply;
         catsAndSoup = _catsAndSoup;
     }
+    
+    function setMarketplace(address marketplace) external onlyOwner {
+        require(marketplace != address(0), "Cannot assign marketplace to zero address");
+        _marketplace = marketplace;
+        emit MarketplaceSet(_marketplace);
+    }
 
     function initialBatchMint() public onlyOwner {
         require(_marketplace != address(0), "Marketplace address has not been set");
         for (uint256 i = 0; i <= maxSupply; i++) {
             LandStruct storage _newLand = landData[i];
             _newLand.landType = "Empty";
-            _newLand.owner = MarketplaceAccess._marketplace;
+            _newLand.owner = _marketplace;
 
             //TODO: Create formula for positions
             _newLand.positionX = 0;
@@ -55,20 +68,18 @@ contract Land is ERC721A, Ownable, MarketplaceAccess {
 
         }
         
-        emit InitialMint(maxSupply, MarketplaceAccess._marketplace);
+        emit InitialMint(maxSupply, _marketplace);
 
-        _mint(MarketplaceAccess._marketplace, maxSupply);
+        _mint(_marketplace, maxSupply);
     }
 
     function buyLand(uint256 _landId, address _userAddress) external onlyMarketplace {
-        require(boughtLand <= maxSupply, "No more land to buy");
         require(_landId <= maxSupply, "This land does not exist");
-        require(landData[_landId].owner == MarketplaceAccess._marketplace, "This land has already been bought");
+        require(landData[_landId].owner == _marketplace, "This land has already been bought");
 
         landData[_landId].owner = _userAddress;
-        boughtLand++;
 
-        safeTransferFrom(MarketplaceAccess._marketplace, _userAddress, _landId);
+        safeTransferFrom(_marketplace, _userAddress, _landId);
     }
 
     function assignPot(uint256 _landId) public {

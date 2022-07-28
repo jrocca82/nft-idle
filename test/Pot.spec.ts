@@ -1,7 +1,6 @@
 import { ethers } from "hardhat";
 import { ethers as tsEthers } from "ethers";
 import { expect } from "chai";
-import { getEventData } from "./utils";
 import {
   CatsAndSoup,
   CatsAndSoup__factory,
@@ -17,9 +16,7 @@ let deployer: tsEthers.Signer;
 let user: tsEthers.Wallet;
 let catsAndSoup: CatsAndSoup;
 
-const fakeAddress = "0x5CD0b455893eae3ebe0a72b23f0D86564ccEC218";
-
-describe("Land Contract", () => {
+describe("Pot Contract", () => {
   before(async () => {
     deployer = (await ethers.getSigners())[0];
     catsAndSoup = await new CatsAndSoup__factory(deployer).deploy();
@@ -45,7 +42,7 @@ describe("Land Contract", () => {
     });
   });
 
-  //Test mint function in marketplace test
+  //Test mint function in Marketplace
 
   it("Should return the correct decimals", async () => {
     const decimals = await pot.decimals();
