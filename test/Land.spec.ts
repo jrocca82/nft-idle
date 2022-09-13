@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import { ethers as tsEthers } from "ethers";
 import { expect } from "chai";
-import { fakeAddress, getEventData } from "./utils";
+import { fakeAddress, getEventData } from "./helpers/utils";
 import {
   CatsAndSoup,
   CatsAndSoup__factory,

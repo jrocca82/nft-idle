@@ -1,85 +1,63 @@
-import { config as dotenvConfig } from "dotenv";
-dotenvConfig();
-import "@nomiclabs/hardhat-waffle";
+import "dotenv/config";
+import { HardhatUserConfig } from "hardhat/types";
+import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
-import "@openzeppelin/hardhat-upgrades";
-import "@nomiclabs/hardhat-etherscan";
-import "hardhat-contract-sizer";
-import "./scripts/tasks";
+import "hardhat-gas-reporter";
+import "@typechain/hardhat";
 import "solidity-coverage";
 import "@typechain/hardhat";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
-import { ethers } from "ethers";
-import "hardhat-gas-reporter";
+import "@nomiclabs/hardhat-etherscan";
+import "hardhat-tracer";
 
-const defaultKey =
-  "0000000000000000000000000000000000000000000000000000000000000001";
-const defaultRpcUrl = "https://localhost:8545";
-const defaultEtherBalance = "100000000";
-
-export default {
-  gasReporter: {
-    enabled: true,
-    currency: "ETH",
-    gasPrice: process.env.DEPLOY_GAS_PRICE_WEI,
-    showInChart: true
-  },
-  paths: {
-    sources: "./contracts",
-    cache: "./cache",
-    artifacts: "./artifacts",
-    tests: "./test"
-  },
+const config: HardhatUserConfig = {
+  solidity: "0.8.13",
+  paths: {                         
+    artifacts: './artifacts',
+ },
   networks: {
     hardhat: {
-      chainId: 1337,
-      accounts: [
-        {
-          privateKey: process.env.PRIVATE_KEY,
-          balance: ethers.utils
-            .parseEther(
-              process.env.LOCAL_ETHER_BALANCE?.toString() ?? defaultEtherBalance
-            )
-            .toString()
-        }
-      ],
-      allowUnlimitedContractSize: false
+      chainId: 31337,
+      forking: {
+        url: process.env.MAINNET_URL || "",
+        blockNumber: Number(process.env.BLOCK_NUMBER) || 14452169,
+      },
     },
-    kovan: {
-      url: process.env.KOVAN_URL || defaultRpcUrl,
-      accounts: [process.env.PRIVATE_KEY || defaultKey]
+    localhost: {
+      chainId: 31337,
     },
-    rinkeby: {
-      url: process.env.RINKEBY_URL || defaultRpcUrl,
-      accounts: [process.env.PRIVATE_KEY || defaultKey]
-    },
-    mainnet: {
-      url: process.env.MAINNET_URL || defaultRpcUrl,
-      accounts: [process.env.PRIVATE_KEY || defaultKey]
-    }
+    // goerli: {
+    //   url: process.env.GOERLI_URL || "",
+    //   accounts:
+    //     process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    // },
+    // rinkeby: {
+    //   url: process.env.RINKEBY_URL || "",
+    //   accounts:
+    //     process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    // },
+    // mainnet : {
+    //   url: process.env.MAINNET_URL || "",
+    //   accounts: 
+    //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    // }
+  },
+  namedAccounts: {
+    deployer: 0,
+    alice: 1,
+    bob: 2,
+    carol: 3,
+    ted: 4,
+  },
+  gasReporter: {
+    enabled: process.env.REPORT_GAS ? true : undefined,
+    currency: "AUD",
+    coinmarketcap: process.env.COINMARKETCAP_KEY || "",
   },
   etherscan: {
-    // Obtain etherscan API key at https://etherscan.io/
-    apiKey: process.env.ETHERSCAN_KEY
+    apiKey: process.env.ETHERSCAN_API_KEY,
   },
-  solidity: {
-    compilers: [
-      {
-        version: "0.8.9",
-        settings: {
-          optimizer: {
-            enabled: false,
-            runs: 200
-          }
-        }
-      }
-    ]
-  },
-  typechain: {
-    outDir: "build/typechain",
-    target: "ethers-v5",
-    alwaysGenerateOverloads: false,
-    externalArtifacts: ["externalArtifacts/*.json"]
-  }
 };
+
+export default config;

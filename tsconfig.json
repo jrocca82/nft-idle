@@ -6,15 +6,20 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "allowJs": true,
+    "outDir": "dist",
     "noUnusedParameters": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
-    "types": [
-      "node",
-      "mocha"
-    ]
+    "types": ["node", "mocha"]
   },
-  "include": ["./scripts", "artifacts", "./tests"],
+  "include": [
+    "./scripts",
+    "artifacts",
+    "./hardhat.config.ts",
+    "./scripts",
+    "./deploy",
+    "./test"
+  ],
   "files": ["./hardhat.config.ts"]
 }
