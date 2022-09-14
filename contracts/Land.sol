@@ -3,6 +3,11 @@ pragma solidity ^0.8.9;
 
 import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./CatsAndSoup.sol";
 
 contract Land is ERC721A, Ownable {
@@ -36,11 +41,10 @@ contract Land is ERC721A, Ownable {
 
     event InitialMint(uint256 quantity, address initialOwner);
 
-    constructor(string memory name, string memory symbol, uint256 _maxSupply, CatsAndSoup _catsAndSoup) 
+    constructor(string memory name, string memory symbol, uint256 _maxSupply) 
         ERC721A(name, symbol)
     {
         maxSupply = _maxSupply;
-        catsAndSoup = _catsAndSoup;
     }
     
     function setMarketplace(address marketplace) external onlyOwner {

@@ -19,10 +19,10 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       chainId: 31337,
-      forking: {
-        url: process.env.MAINNET_URL || "",
-        blockNumber: Number(process.env.BLOCK_NUMBER) || 14452169,
-      },
+      // forking: {
+      //   url: process.env.MAINNET_URL || "",
+      //   blockNumber: Number(process.env.BLOCK_NUMBER) || 14452169,
+      // },
     },
     localhost: {
       chainId: 31337,

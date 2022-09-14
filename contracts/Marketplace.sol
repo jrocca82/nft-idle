@@ -26,20 +26,7 @@ contract Marketplace {
     event Purchase(string purchaseType, address purchaser, uint256 id);
 
     constructor(
-        Pot _potContract,
-        Land _landContract,
-        Currency _currencyContract,
-        CatsAndSoup _catsAndSoupContract
     ) {
-        require(address(_potContract) != address(0));
-        require(address(_landContract) != address(0));
-        require(address(_currencyContract) != address(0));
-        require(address(_catsAndSoupContract) != address(0));
-
-        potContract = _potContract;
-        landContract = _landContract;
-        currencyContract = _currencyContract;
-        catsAndSoupContract = _catsAndSoupContract;
     }
 
     function buyPot(uint256 _landId) public payable {

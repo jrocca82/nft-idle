@@ -1,7 +1,6 @@
 import { task } from "hardhat/config";
-import contracts from "../../contracts.json";
+import contracts from "../contracts.json";
 import { ethers as tsEthers } from "ethers";
-import { getLedgerSigner } from "../utils";
 
 task("read-balance")
   .addParam("address")
@@ -23,12 +22,7 @@ task("mint")
   .addParam("amount")
   .addOptionalParam("ledgersigner")
   .setAction(async (args, hre) => {
-    let signer: tsEthers.Signer;
-    if (!args.ledgersigner) {
-      signer = (await hre.ethers.getSigners())[0];
-    } else {
-      signer = getLedgerSigner(args.ledgersigner, hre.ethers.provider);
-    }
+    const signer = (await hre.ethers.getSigners())[0];
     const contractAddress = contracts[hre.network.name].token;
     console.log(`network is ${hre.network.name}`);
     console.log(`token address is ${contractAddress}`);

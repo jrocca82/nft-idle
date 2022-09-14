@@ -1,5 +1,5 @@
 import { task } from "hardhat/config";
-import contracts from "../../contracts.json";
+import contracts from "../contracts.json";
 
 task("verify-contracts-etherscan").setAction(async (args, hre) => {
   console.log(`network is ${hre.network.name}`);

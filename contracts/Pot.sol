@@ -18,10 +18,9 @@ contract Pot is ERC20, Ownable {
         _;
     }
 
-    constructor(string memory _name, string memory _symbol, Land _landContract) 
+    constructor(string memory _name, string memory _symbol) 
                 ERC20(_name, _symbol) 
                 {
-                    landContract = _landContract;
                     _decimals = 0;
                 }
 
