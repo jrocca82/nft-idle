@@ -20,33 +20,19 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface MarketplaceInterface extends utils.Interface {
   functions: {
-    "ADMIN_ROLE()": FunctionFragment;
-    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "buyItem(uint256)": FunctionFragment;
     "buyLand(uint256)": FunctionFragment;
     "buyPot(uint256)": FunctionFragment;
     "buyStarterPack(uint256)": FunctionFragment;
     "catPrice()": FunctionFragment;
-    "getRoleAdmin(bytes32)": FunctionFragment;
-    "grantRole(bytes32,address)": FunctionFragment;
-    "hasRole(bytes32,address)": FunctionFragment;
+    "getAuth(address)": FunctionFragment;
     "landPrice()": FunctionFragment;
     "potPrice()": FunctionFragment;
-    "renounceRole(bytes32,address)": FunctionFragment;
-    "revokeRole(bytes32,address)": FunctionFragment;
+    "setAuth(address)": FunctionFragment;
     "soupPrice()": FunctionFragment;
     "startPackPrice()": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "ADMIN_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DEFAULT_ADMIN_ROLE",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "buyItem",
     values: [BigNumberish]
@@ -64,43 +50,16 @@ export interface MarketplaceInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "catPrice", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getRoleAdmin",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "grantRole",
-    values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "hasRole",
-    values: [BytesLike, string]
-  ): string;
+  encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
   encodeFunctionData(functionFragment: "landPrice", values?: undefined): string;
   encodeFunctionData(functionFragment: "potPrice", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "renounceRole",
-    values: [BytesLike, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "revokeRole",
-    values: [BytesLike, string]
-  ): string;
+  encodeFunctionData(functionFragment: "setAuth", values: [string]): string;
   encodeFunctionData(functionFragment: "soupPrice", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "startPackPrice",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
-  ): string;
 
-  decodeFunctionResult(functionFragment: "ADMIN_ROLE", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "DEFAULT_ADMIN_ROLE",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "buyItem", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buyLand", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buyPot", data: BytesLike): Result;
@@ -109,40 +68,21 @@ export interface MarketplaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "catPrice", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getRoleAdmin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "landPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "potPrice", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceRole",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setAuth", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "soupPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "startPackPrice",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Purchase(string,address,uint256)": EventFragment;
-    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
-    "RoleGranted(bytes32,address,address)": EventFragment;
-    "RoleRevoked(bytes32,address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Purchase"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
 }
 
 export type PurchaseEvent = TypedEvent<
@@ -151,28 +91,6 @@ export type PurchaseEvent = TypedEvent<
 >;
 
 export type PurchaseEventFilter = TypedEventFilter<PurchaseEvent>;
-
-export type RoleAdminChangedEvent = TypedEvent<
-  [string, string, string],
-  { role: string; previousAdminRole: string; newAdminRole: string }
->;
-
-export type RoleAdminChangedEventFilter =
-  TypedEventFilter<RoleAdminChangedEvent>;
-
-export type RoleGrantedEvent = TypedEvent<
-  [string, string, string],
-  { role: string; account: string; sender: string }
->;
-
-export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
-
-export type RoleRevokedEvent = TypedEvent<
-  [string, string, string],
-  { role: string; account: string; sender: string }
->;
-
-export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
 export interface Marketplace extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -201,10 +119,6 @@ export interface Marketplace extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
     buyItem(
       _itemId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -227,49 +141,21 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     landPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     potPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    setAuth(
+      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     soupPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     startPackPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
   };
-
-  ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   buyItem(
     _itemId: BigNumberish,
@@ -293,33 +179,14 @@ export interface Marketplace extends BaseContract {
 
   catPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-  grantRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  hasRole(
-    role: BytesLike,
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
   landPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   potPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  renounceRole(
-    role: BytesLike,
-    account: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  revokeRole(
-    role: BytesLike,
-    account: string,
+  setAuth(
+    _address: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -327,16 +194,7 @@ export interface Marketplace extends BaseContract {
 
   startPackPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  supportsInterface(
-    interfaceId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   callStatic: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
     buyItem(_itemId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     buyLand(_landId: BigNumberish, overrides?: CallOverrides): Promise<void>;
@@ -350,44 +208,17 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
     landPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     potPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    revokeRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setAuth(_address: string, overrides?: CallOverrides): Promise<void>;
 
     soupPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     startPackPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
   };
 
   filters: {
@@ -401,46 +232,9 @@ export interface Marketplace extends BaseContract {
       purchaser?: null,
       id?: null
     ): PurchaseEventFilter;
-
-    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
-      role?: BytesLike | null,
-      previousAdminRole?: BytesLike | null,
-      newAdminRole?: BytesLike | null
-    ): RoleAdminChangedEventFilter;
-    RoleAdminChanged(
-      role?: BytesLike | null,
-      previousAdminRole?: BytesLike | null,
-      newAdminRole?: BytesLike | null
-    ): RoleAdminChangedEventFilter;
-
-    "RoleGranted(bytes32,address,address)"(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): RoleGrantedEventFilter;
-    RoleGranted(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): RoleGrantedEventFilter;
-
-    "RoleRevoked(bytes32,address,address)"(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): RoleRevokedEventFilter;
-    RoleRevoked(
-      role?: BytesLike | null,
-      account?: string | null,
-      sender?: string | null
-    ): RoleRevokedEventFilter;
   };
 
   estimateGas: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
     buyItem(
       _itemId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -463,56 +257,23 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     landPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     potPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    setAuth(
+      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     soupPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     startPackPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    DEFAULT_ADMIN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     buyItem(
       _itemId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -535,20 +296,8 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getRoleAdmin(
-      role: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    grantRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    hasRole(
-      role: BytesLike,
-      account: string,
+    getAuth(
+      _address: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -556,25 +305,13 @@ export interface Marketplace extends BaseContract {
 
     potPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    renounceRole(
-      role: BytesLike,
-      account: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    revokeRole(
-      role: BytesLike,
-      account: string,
+    setAuth(
+      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     soupPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     startPackPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
   };
 }
