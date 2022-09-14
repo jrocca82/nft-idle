@@ -30,6 +30,15 @@ contract Marketplace is AuthController {
     ) AuthController() {
     }
 
+    function setContractAuths() public {
+        require(isAuthorized[msg.sender], "Unauthorized");
+        AuthController.setAuth(address(potContract));
+        AuthController.setAuth(address(landContract));
+        AuthController.setAuth(address(currencyContract));
+        AuthController.setAuth(address(catsAndSoupContract));
+        AuthController.setAuth(address(this));
+    }
+
     function buyPot(uint256 _landId) public payable {
         require(msg.value >= potPrice);
         require(landContract.balanceOf(msg.sender) > potContract.balanceOf(msg.sender), "You need to buy a land first");
@@ -71,6 +80,8 @@ contract Marketplace is AuthController {
         require(msg.value >= startPackPrice, "Not enough ETH");
 
         emit Purchase("Starter Pack", msg.sender, _landId);
+
+        AuthController.setUser(msg.sender);
 
         // landContract.buyLand(_landId, msg.sender);
         // potContract.mintPot(_landId, msg.sender);

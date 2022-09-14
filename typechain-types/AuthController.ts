@@ -6,8 +6,6 @@ import {
   BigNumber,
   BytesLike,
   CallOverrides,
-  ContractTransaction,
-  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -19,14 +17,14 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface AuthControllerInterface extends utils.Interface {
   functions: {
     "getAuth(address)": FunctionFragment;
-    "setAuth(address)": FunctionFragment;
+    "getUser(address)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
-  encodeFunctionData(functionFragment: "setAuth", values: [string]): string;
+  encodeFunctionData(functionFragment: "getUser", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setAuth", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getUser", data: BytesLike): Result;
 
   events: {};
 }
@@ -60,23 +58,17 @@ export interface AuthController extends BaseContract {
   functions: {
     getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
-    setAuth(
-      _address: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    getUser(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
   };
 
   getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
-  setAuth(
-    _address: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
   callStatic: {
     getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
-    setAuth(_address: string, overrides?: CallOverrides): Promise<void>;
+    getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
   };
 
   filters: {};
@@ -84,10 +76,7 @@ export interface AuthController extends BaseContract {
   estimateGas: {
     getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    setAuth(
-      _address: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    getUser(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -96,9 +85,9 @@ export interface AuthController extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setAuth(
+    getUser(
       _address: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

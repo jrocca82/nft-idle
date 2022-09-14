@@ -37,9 +37,15 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "setAuth",
-    outputs: [],
-    stateMutability: "nonpayable",
+    name: "getUser",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];

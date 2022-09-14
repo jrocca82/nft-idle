@@ -28,6 +28,7 @@ export interface LandInterface extends utils.Interface {
     "buyLand(uint256,address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getAuth(address)": FunctionFragment;
+    "getUser(address)": FunctionFragment;
     "initialBatchMint()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "landData(uint256)": FunctionFragment;
@@ -37,7 +38,6 @@ export interface LandInterface extends utils.Interface {
     "ownerOf(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setAuth(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -71,6 +71,7 @@ export interface LandInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
+  encodeFunctionData(functionFragment: "getUser", values: [string]): string;
   encodeFunctionData(
     functionFragment: "initialBatchMint",
     values?: undefined
@@ -101,7 +102,6 @@ export interface LandInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "setAuth", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -134,6 +134,7 @@ export interface LandInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getUser", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "initialBatchMint",
     data: BytesLike
@@ -155,7 +156,6 @@ export interface LandInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setAuth", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -283,6 +283,8 @@ export interface Land extends BaseContract {
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
+    getUser(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
+
     initialBatchMint(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -351,11 +353,6 @@ export interface Land extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setAuth(
-      _address: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -411,6 +408,8 @@ export interface Land extends BaseContract {
   ): Promise<string>;
 
   getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
   initialBatchMint(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -477,11 +476,6 @@ export interface Land extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setAuth(
-    _address: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -531,6 +525,8 @@ export interface Land extends BaseContract {
     ): Promise<string>;
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
     initialBatchMint(overrides?: CallOverrides): Promise<void>;
 
@@ -594,8 +590,6 @@ export interface Land extends BaseContract {
       approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    setAuth(_address: string, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -705,6 +699,8 @@ export interface Land extends BaseContract {
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getUser(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     initialBatchMint(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -749,11 +745,6 @@ export interface Land extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setAuth(
-      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -820,6 +811,11 @@ export interface Land extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getUser(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     initialBatchMint(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -867,11 +863,6 @@ export interface Land extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setAuth(
-      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

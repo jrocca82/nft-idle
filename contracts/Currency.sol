@@ -15,8 +15,8 @@ contract Currency is IERC20, ERC20, AuthController {
                     _decimals = 18;
                 }
 
-    //TODO: figure out how to limit access to this function-- onlyOwner?
     function mintCurrency(address _userAddress, uint256 _amount) public {
+        require(isUser[msg.sender] || isAuthorized[msg.sender], "Unauthorized");
         emit CurrencyEarned(_userAddress, _amount);
         _mint(_userAddress, _amount);
     }

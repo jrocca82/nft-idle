@@ -23,12 +23,12 @@ export interface CatsAndSoupInterface extends utils.Interface {
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "cat()": FunctionFragment;
     "getAuth(address)": FunctionFragment;
+    "getUser(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintItem(uint256,address)": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setAuth(address)": FunctionFragment;
     "soup()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
@@ -44,6 +44,7 @@ export interface CatsAndSoupInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "cat", values?: undefined): string;
   encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
+  encodeFunctionData(functionFragment: "getUser", values: [string]): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
@@ -64,7 +65,6 @@ export interface CatsAndSoupInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "setAuth", values: [string]): string;
   encodeFunctionData(functionFragment: "soup", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -79,6 +79,7 @@ export interface CatsAndSoupInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "cat", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getUser", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -96,7 +97,6 @@ export interface CatsAndSoupInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setAuth", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "soup", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
@@ -200,6 +200,8 @@ export interface CatsAndSoup extends BaseContract {
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
+    getUser(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
+
     isApprovedForAll(
       account: string,
       operator: string,
@@ -236,11 +238,6 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setAuth(
-      _address: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     soup(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     supportsInterface(
@@ -266,6 +263,8 @@ export interface CatsAndSoup extends BaseContract {
   cat(overrides?: CallOverrides): Promise<BigNumber>;
 
   getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
   isApprovedForAll(
     account: string,
@@ -303,11 +302,6 @@ export interface CatsAndSoup extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setAuth(
-    _address: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   soup(overrides?: CallOverrides): Promise<BigNumber>;
 
   supportsInterface(
@@ -333,6 +327,8 @@ export interface CatsAndSoup extends BaseContract {
     cat(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
     isApprovedForAll(
       account: string,
@@ -369,8 +365,6 @@ export interface CatsAndSoup extends BaseContract {
       approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    setAuth(_address: string, overrides?: CallOverrides): Promise<void>;
 
     soup(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -448,6 +442,8 @@ export interface CatsAndSoup extends BaseContract {
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getUser(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedForAll(
       account: string,
       operator: string,
@@ -481,11 +477,6 @@ export interface CatsAndSoup extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setAuth(
-      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -519,6 +510,11 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getUser(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       account: string,
       operator: string,
@@ -552,11 +548,6 @@ export interface CatsAndSoup extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setAuth(
-      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

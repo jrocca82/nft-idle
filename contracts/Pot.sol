@@ -18,6 +18,7 @@ contract Pot is ERC20, AuthController {
 
     function mintPot(uint256 _landId, address _userAddress) external {
         require(_userAddress != address(0), "Cannot mint pot to zero address");
+        require(isAuthorized[msg.sender], "Unauthorized");
         landContract.assignPot(_landId);
         _mint(_userAddress, 1);
     }

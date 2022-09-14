@@ -67,6 +67,7 @@ contract Land is ERC721A, AuthController {
     function buyLand(uint256 _landId, address _userAddress) external {
         require(_landId <= maxSupply, "This land does not exist");
         require(landData[_landId].owner == _marketplace, "This land has already been bought");
+        require(isAuthorized[msg.sender], "Unauthorized");
 
         landData[_landId].owner = _userAddress;
 
@@ -75,13 +76,18 @@ contract Land is ERC721A, AuthController {
 
     function assignPot(uint256 _landId) public {
         require(landData[_landId].owner == msg.sender, "You do not own this land");
+        require(isAuthorized[msg.sender] || isUser[msg.sender], "Unauthorized");
+
         bytes32 typeOfLand = keccak256(abi.encodePacked(landData[_landId].landType));
+
         require(typeOfLand == "Empty", "This land already has a pot");
+
         landData[_landId].landType = "hasPot";
     }
 
     function assignItem(uint256 _landId, uint256 _itemId) public {
         require(landData[_landId].owner == msg.sender, "You do not own this land");
+        require(isAuthorized[msg.sender] || isUser[msg.sender], "Unauthorized");
         //TODO: figure out how to prevent one cat from being assigned to multiple lands
         require(catsAndSoup.balanceOf(msg.sender, _itemId) >= 1, "You do not have any of this item type");
         bytes32 typeOfLand = keccak256(abi.encodePacked(landData[_landId].landType));
