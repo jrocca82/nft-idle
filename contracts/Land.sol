@@ -2,15 +2,17 @@
 pragma solidity ^0.8.9;
 
 import "erc721a/contracts/ERC721A.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./AuthController.sol";
+import "./CatsAndSoup.sol";
+
+//Imports that need to be compiled for ERC721A
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "./CatsAndSoup.sol";
 
-contract Land is ERC721A, Ownable {
+contract Land is ERC721A, AuthController {
     uint256 public maxSupply;
 
     struct LandStruct {
@@ -31,31 +33,16 @@ contract Land is ERC721A, Ownable {
 
     address public _marketplace;
 
-    event MarketplaceSet(address marketplace);
-
-    modifier onlyMarketplace() {
-        require(msg.sender == _marketplace, "Unauthorized. Marketplace only.");
-        _;
-    }
-
-
     event InitialMint(uint256 quantity, address initialOwner);
 
     constructor(string memory name, string memory symbol, uint256 _maxSupply) 
-        ERC721A(name, symbol)
+        ERC721A(name, symbol) AuthController()
     {
         maxSupply = _maxSupply;
     }
-    
-    function setMarketplace(address marketplace) external onlyOwner {
-        require(marketplace != address(0), "Cannot assign marketplace to zero address");
-        _marketplace = marketplace;
-        emit MarketplaceSet(_marketplace);
-    }
 
-    function initialBatchMint() public onlyOwner {
-        require(_marketplace != address(0), "Marketplace address has not been set");
-        for (uint256 i = 0; i <= maxSupply; i++) {
+    function initialBatchMint() public {
+        for (uint256 i = 0; i < maxSupply; i++) {
             LandStruct storage _newLand = landData[i];
             _newLand.landType = "Empty";
             _newLand.owner = _marketplace;
@@ -77,7 +64,7 @@ contract Land is ERC721A, Ownable {
         _mint(_marketplace, maxSupply);
     }
 
-    function buyLand(uint256 _landId, address _userAddress) external onlyMarketplace {
+    function buyLand(uint256 _landId, address _userAddress) external {
         require(_landId <= maxSupply, "This land does not exist");
         require(landData[_landId].owner == _marketplace, "This land has already been bought");
 
@@ -117,5 +104,4 @@ contract Land is ERC721A, Ownable {
             landData[_landId].landType = "Productive";
         }
     }
-
 }

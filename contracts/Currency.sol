@@ -2,15 +2,15 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./AuthController.sol";
 
-contract Currency is IERC20, ERC20, Ownable {
+contract Currency is IERC20, ERC20, AuthController {
     uint8 private immutable _decimals;
 
     event CurrencyEarned(address _to, uint256 _amount);
 
     constructor(string memory _name, string memory _symbol) 
-                ERC20(_name, _symbol) 
+                ERC20(_name, _symbol) AuthController()
                 {
                     _decimals = 18;
                 }

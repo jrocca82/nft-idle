@@ -6,8 +6,9 @@ import "./Land.sol";
 import "./Pot.sol";
 import "./CatsAndSoup.sol";
 import "./Currency.sol";
+import "./AuthController.sol";
 
-contract Marketplace {
+contract Marketplace is AuthController {
     Pot private potContract;
     Land private landContract;
     Currency private currencyContract;
@@ -26,7 +27,7 @@ contract Marketplace {
     event Purchase(string purchaseType, address purchaser, uint256 id);
 
     constructor(
-    ) {
+    ) AuthController() {
     }
 
     function buyPot(uint256 _landId) public payable {
