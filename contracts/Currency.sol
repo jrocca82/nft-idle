@@ -17,7 +17,7 @@ contract Currency is IERC20, ERC20, AuthController {
     }
 
     function mintCurrency(address _userAddress, uint256 _amount) public {
-        require(isUser[msg.sender] || isAuthorized[msg.sender], "Unauthorized");
+        require(isUser[msg.sender] || isAuthorized[msg.sender], "Currency: Unauthorized");
         emit CurrencyEarned(_userAddress, _amount);
         _mint(_userAddress, _amount);
     }

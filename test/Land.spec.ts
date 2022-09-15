@@ -39,7 +39,7 @@ const setupEnvironment = async () => {
 
   const potFactory: Pot__factory = await ethers.getContractFactory("Pot");
 
-  const pot = (await potFactory.deploy("SoupPot", "SPT")) as unknown as Pot;
+  const pot = (await potFactory.deploy("SoupPot", "SPT", land.address)) as unknown as Pot;
 
   const mFactory: Marketplace__factory = await ethers.getContractFactory(
     "Marketplace"
@@ -58,12 +58,14 @@ const setupEnvironment = async () => {
 describe("Land", () => {
   let land: Land;
   let marketplace: Marketplace;
+  let pot: Pot;
   let deployer: SignerWithAddress, alice: SignerWithAddress;
   before(async () => {
     [deployer, alice] = await ethers.getSigners();
     const env = await setupEnvironment();
     land = env.land;
     marketplace = env.marketplace;
+    pot = env.pot;
   });
 
   it("Should set the max supply to 10", async () => {
@@ -71,7 +73,7 @@ describe("Land", () => {
     expect(supply).to.equal(10);
   });
 
-  it("Should allow only owner to set marketplace address to non-zero address", async () => {
+  it("Should allow only owner to set contract addresses to non-zero address", async () => {
     //Not passing
     // land.connect(alice);
     // await expect(land.setMarketplace(marketplace.address)).to.be.revertedWith("Ownable: caller is not the owner");

@@ -45,7 +45,7 @@ const setupEnvironment = async () => {
 
   const potFactory: Pot__factory = await ethers.getContractFactory("Pot");
 
-  const pot = (await potFactory.deploy("SoupPot", "SPT")) as unknown as Pot;
+  const pot = (await potFactory.deploy("SoupPot", "SPT", land.address)) as unknown as Pot;
 
   const mFactory: Marketplace__factory = await ethers.getContractFactory(
     "Marketplace"
@@ -79,19 +79,31 @@ describe("Marketplace", () => {
     marketplace = env.marketplace;
 
     //Send alice currency
+    
+    landprice = ethers.utils.parseEther("1");
+    
+    //Connect all addresses to deployer
+    land.connect(deployer.address);
+    marketplace.connect(deployer.address);
+    pot.connect(deployer.address);
+    catsAndSoup.connect(deployer.address);
+
+    //Mint initial amount to Alice
     const startAmount = ethers.utils.parseEther("100000");
+    currency.connect(alice.address);
     await currency.mintCurrency(alice.address, startAmount);
 
-    landprice = ethers.utils.parseEther("1");
+    //Alice approves marketplace to spend currency-- NOT WORKING
+    await currency.approve(marketplace.address, ethers.constants.MaxUint256);
 
-    //Connect land to marketplace and initial mint
-    land.connect(deployer.address);
+    //Set marketplaces and batch mint initial lands
     await land.setMarketplace(marketplace.address);
+    await pot.setMarketplace(marketplace.address);
+    await catsAndSoup.setMarketplace(marketplace.address);
     await land.initialBatchMint();
   });
   
-  it("Should set contract auths", async () => {
-    marketplace.connect(deployer.address);
+  it("Should set contract auths and approvals", async () => {
     await marketplace.setContractAuths();
     expect(await marketplace.getAuth(pot.address)).to.be.equal(true);
     expect(await marketplace.getAuth(land.address)).to.be.equal(true);
@@ -101,12 +113,42 @@ describe("Marketplace", () => {
   });
   
   it("Should allow user to buy a starter pack", async () => {
-    const auth = await land.getAuth(land.address);
-    const tx = await marketplace.buyStarterPack(1, { value: landprice});
-    console.log(tx.from);
-    //Actual: 0
+    marketplace.connect(alice.address);
+    await marketplace.buyStarterPack(1, { value: landprice});
+
+    //Actual: 0 (for all)
     expect(await land.balanceOf(alice.address)).to.be.equal(1);
+    expect(await pot.balanceOf(alice.address)).to.be.equal(1);
+    expect(await catsAndSoup.balanceOf(alice.address, 0)).to.be.equal(1);
+    expect(await catsAndSoup.balanceOf(alice.address, 1)).to.be.equal(1);
   });
 
-  //Not finished
+  it("Should allow user to buy land", async () => {
+    //ID 1 bought in previous test
+    await marketplace.buyLand(2, { value: landprice});
+
+    //Actual: 0
+    expect(await land.balanceOf(alice.address)).to.be.equal(2);
+  });
+
+  it("Should allow user to buy pot", async () => {
+    //Buy pot to mint to land ID 2-- purchased in previous test
+    await marketplace.buyPot(2, { value: landprice});
+
+    //Actual: 0
+    expect(await pot.balanceOf(alice.address)).to.be.equal(2);
+  });
+
+  it("Should allow user to buy item", async () => {
+    //Buy a cat
+    await marketplace.buyItem(0, { value: landprice});
+
+    //Actual: 0
+    expect(await catsAndSoup.balanceOf(alice.address, 0)).to.be.equal(2);
+  });
+
+  //Not finished: 
+      //need to check if currency being deducted from Alice
+      //Need to check emitting events
+      //Need to fix balances-- why 0?
 });

@@ -14,15 +14,15 @@ contract Marketplace is AuthController {
     Currency public currencyContract;
     CatsAndSoup public catsAndSoupContract;
 
-    uint256 public landPrice = 1 ether;
+    uint256 public landPrice = 1000;
 
-    uint256 public potPrice = 0.1 ether;
+    uint256 public potPrice = 100;
 
-    uint256 public catPrice = 0.5 ether;
+    uint256 public catPrice = 500;
 
-    uint256 public soupPrice = 0.3 ether;
+    uint256 public soupPrice = 500;
 
-    uint256 public startPackPrice = 1 ether;
+    uint256 public startPackPrice = 1500;
 
     event Purchase(string purchaseType, address purchaser, uint256 id);
 
@@ -36,6 +36,7 @@ contract Marketplace is AuthController {
         potContract = _potContract;
         currencyContract = _currencyContract;
         catsAndSoupContract = _catsAndSoupContract;
+        setAuth(msg.sender);
         landContract.setApprovalForAll(address(landContract), true);
         catsAndSoupContract.setApprovalForAll(address(catsAndSoupContract), true);
     }
@@ -59,7 +60,6 @@ contract Marketplace is AuthController {
 
         emit Purchase("Pot", msg.sender, _landId);
 
-        currencyContract.transferFrom(msg.sender, address(this), potPrice);
         potContract.mintPot(_landId, msg.sender);
     }
 
@@ -68,7 +68,6 @@ contract Marketplace is AuthController {
 
         emit Purchase("Land", msg.sender, _landId);
 
-        currencyContract.transferFrom(msg.sender, address(this), landPrice);
         landContract.buyLand(_landId, msg.sender);
     }
 
@@ -78,12 +77,9 @@ contract Marketplace is AuthController {
         if (_itemId == 0) {
             require(msg.value >= catPrice);
             emit Purchase("Cat", msg.sender, _itemId);
-
-            currencyContract.transferFrom(msg.sender, address(this), catPrice);
         } else {
             require(msg.value >= soupPrice);
             emit Purchase("Soup", msg.sender, _itemId);
-            currencyContract.transferFrom(msg.sender, address(this), soupPrice);
         }
 
         catsAndSoupContract.mintItem(_itemId, msg.sender);

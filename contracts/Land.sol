@@ -34,6 +34,13 @@ contract Land is ERC721A, AuthController, Ownable {
     CatsAndSoup private catsAndSoup;
 
     address public marketplace;
+    
+    //Encoded land types -- needed to compare strings
+    bytes32 emptyLand = keccak256(abi.encodePacked("Empty"));
+    bytes32 hasPot = keccak256(abi.encodePacked("hasPot"));
+    bytes32 hasSoup = keccak256(abi.encodePacked("hasSoup"));
+    bytes32 hasCat = keccak256(abi.encodePacked("hasCat"));
+    bytes32 productive = keccak256(abi.encodePacked("Productive"));
 
     event InitialMint(uint256 quantity, address initialOwner);
 
@@ -43,6 +50,7 @@ contract Land is ERC721A, AuthController, Ownable {
         uint256 _maxSupply
     ) ERC721A(name, symbol) AuthController() {
         maxSupply = _maxSupply;
+        setAuth(msg.sender);
     }
 
     function setMarketplace(address _marketplace) public onlyOwner {
@@ -52,7 +60,6 @@ contract Land is ERC721A, AuthController, Ownable {
         );
         marketplace = _marketplace;
         setAuth(marketplace);
-        setAuth(address(this));
     }
 
     function getOwner(uint256 _landId) public view returns (address) {
@@ -60,7 +67,7 @@ contract Land is ERC721A, AuthController, Ownable {
     }
 
     function initialBatchMint() public {
-        require(isAuthorized[msg.sender], "Unauthorized");
+        require(isAuthorized[msg.sender], "Land Contract: Unauthorized");
         for (uint256 i = 0; i < maxSupply; i++) {
             LandStruct storage _newLand = landData[i];
             _newLand.landType = "Empty";
@@ -88,25 +95,20 @@ contract Land is ERC721A, AuthController, Ownable {
             landData[_landId].owner == marketplace,
             "This land has already been bought"
         );
-        require(isAuthorized[msg.sender], "Unauthorized");
+        require(isAuthorized[msg.sender], "Land Contract: Unauthorized");
 
         landData[_landId].owner = _userAddress;
 
         this.safeTransferFrom(marketplace, _userAddress, _landId);
     }
 
-    function assignPot(uint256 _landId) public {
-        require(
-            landData[_landId].owner == msg.sender,
-            "You do not own this land"
-        );
-        require(isAuthorized[msg.sender] || isUser[msg.sender], "Unauthorized");
-
+    function assignPot(uint256 _landId, address _user) public {
+        require(landData[_landId].owner == _user, "You do not own this land");
         bytes32 typeOfLand = keccak256(
             abi.encodePacked(landData[_landId].landType)
         );
 
-        require(typeOfLand == "Empty", "This land already has a pot");
+        require(typeOfLand == emptyLand, "This land already has a pot");
 
         landData[_landId].landType = "hasPot";
     }
@@ -116,7 +118,7 @@ contract Land is ERC721A, AuthController, Ownable {
             landData[_landId].owner == msg.sender,
             "You do not own this land"
         );
-        require(isAuthorized[msg.sender] || isUser[msg.sender], "Unauthorized");
+        require(isAuthorized[msg.sender] || isUser[msg.sender], "Land Contract: Unauthorized");
         //TODO: figure out how to prevent one cat from being assigned to multiple lands
         require(
             catsAndSoup.balanceOf(msg.sender, _itemId) >= 1,
@@ -125,20 +127,20 @@ contract Land is ERC721A, AuthController, Ownable {
         bytes32 typeOfLand = keccak256(
             abi.encodePacked(landData[_landId].landType)
         );
-        require(typeOfLand != "Empty", "Please place a pot first");
-        require(typeOfLand != "Productive", "This land is full");
+        require(typeOfLand != emptyLand, "Please place a pot first");
+        require(typeOfLand != productive, "This land is full");
         require(_itemId < 2, "This item does not exist");
         if (_itemId == 0) {
-            require(typeOfLand != "hasCat", "This land already has a cat");
+            require(typeOfLand != hasCat, "This land already has a cat");
         }
 
         if (_itemId == 1) {
-            require(typeOfLand != "hasSoup", "This land already has soup");
+            require(typeOfLand != hasSoup, "This land already has soup");
         }
 
-        if (typeOfLand == "hasPot" && _itemId == 0) {
+        if (typeOfLand == hasPot && _itemId == 0) {
             landData[_landId].landType = "hasCat";
-        } else if (typeOfLand == "hasPot" && _itemId == 1) {
+        } else if (typeOfLand == hasPot && _itemId == 1) {
             landData[_landId].landType = "hasSoup";
         } else {
             landData[_landId].landType = "Productive";

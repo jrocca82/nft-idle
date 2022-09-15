@@ -3,18 +3,30 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
 import { ethers } from "hardhat";
-import { Pot, Pot__factory } from "../typechain-types";
+import { Pot, Pot__factory, Land, Land__factory } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 chai.use(solidity);
 chai.use(chaiAsPromised);
 
 const setupEnvironment = async () => {
+  const landFactory: Land__factory = await ethers.getContractFactory(
+    "Land"
+  );
+
+  //Max supply set to 10
+  const land = (await landFactory.deploy(
+    "Land",
+    "LND",
+    10
+  )) as unknown as Land;
+
   const factory: Pot__factory = await ethers.getContractFactory("Pot");
 
   const pot = (await factory.deploy(
     "SoupPot",
-    "SPT"
+    "SPT",
+    land.address
   )) as unknown as Pot;
 
   return { pot };

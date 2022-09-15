@@ -22,7 +22,7 @@ export interface LandInterface extends utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "assignItem(uint256,uint256)": FunctionFragment;
-    "assignPot(uint256)": FunctionFragment;
+    "assignPot(uint256,address)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "buyLand(uint256,address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
@@ -60,7 +60,7 @@ export interface LandInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "assignPot",
-    values: [BigNumberish]
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
@@ -309,6 +309,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
+      _user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -456,6 +457,7 @@ export interface Land extends BaseContract {
 
   assignPot(
     _landId: BigNumberish,
+    _user: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -592,7 +594,11 @@ export interface Land extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    assignPot(_landId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    assignPot(
+      _landId: BigNumberish,
+      _user: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -789,6 +795,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
+      _user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -916,6 +923,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
+      _user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

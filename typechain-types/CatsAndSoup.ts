@@ -25,12 +25,17 @@ export interface CatsAndSoupInterface extends utils.Interface {
     "getAuth(address)": FunctionFragment;
     "getUser(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "marketplace()": FunctionFragment;
     "mintItem(uint256,address)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setMarketplace(address)": FunctionFragment;
     "soup()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
   };
 
@@ -50,8 +55,17 @@ export interface CatsAndSoupInterface extends utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "marketplace",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "mintItem",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
@@ -65,10 +79,18 @@ export interface CatsAndSoupInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setMarketplace",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "soup", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
 
@@ -84,7 +106,16 @@ export interface CatsAndSoupInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "marketplace",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "mintItem", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "safeBatchTransferFrom",
     data: BytesLike
@@ -97,21 +128,31 @@ export interface CatsAndSoupInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMarketplace",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "soup", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -123,6 +164,14 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export type TransferBatchEvent = TypedEvent<
   [string, string, string, BigNumber[], BigNumber[]],
@@ -208,9 +257,17 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    marketplace(overrides?: CallOverrides): Promise<[string]>;
+
     mintItem(
       _itemId: BigNumberish,
       _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -238,12 +295,22 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setMarketplace(
+      _marketplace: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     soup(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
   };
@@ -272,9 +339,17 @@ export interface CatsAndSoup extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  marketplace(overrides?: CallOverrides): Promise<string>;
+
   mintItem(
     _itemId: BigNumberish,
     _to: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -302,12 +377,22 @@ export interface CatsAndSoup extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setMarketplace(
+    _marketplace: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   soup(overrides?: CallOverrides): Promise<BigNumber>;
 
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -336,11 +421,17 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    marketplace(overrides?: CallOverrides): Promise<string>;
+
     mintItem(
       _itemId: BigNumberish,
       _to: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     safeBatchTransferFrom(
       from: string,
@@ -366,12 +457,22 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setMarketplace(
+      _marketplace: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     soup(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
@@ -387,6 +488,15 @@ export interface CatsAndSoup extends BaseContract {
       operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -450,9 +560,17 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    marketplace(overrides?: CallOverrides): Promise<BigNumber>;
+
     mintItem(
       _itemId: BigNumberish,
       _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -480,11 +598,21 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setMarketplace(
+      _marketplace: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     soup(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     uri(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
@@ -521,9 +649,17 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    marketplace(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     mintItem(
       _itemId: BigNumberish,
       _to: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -551,11 +687,21 @@ export interface CatsAndSoup extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setMarketplace(
+      _marketplace: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     soup(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     uri(
