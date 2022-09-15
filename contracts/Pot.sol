@@ -8,13 +8,12 @@ import "./Land.sol";
 
 contract Pot is ERC20, AuthController {
     Land private landContract;
-    uint8 private immutable _decimals;
+    uint8 constant _decimals = 0;
 
-    constructor(string memory _name, string memory _symbol) 
-                ERC20(_name, _symbol) AuthController()
-                {
-                    _decimals = 0;
-                }
+    constructor(string memory _name, string memory _symbol)
+        ERC20(_name, _symbol)
+        AuthController()
+    {}
 
     function mintPot(uint256 _landId, address _userAddress) external {
         require(_userAddress != address(0), "Cannot mint pot to zero address");
@@ -23,7 +22,7 @@ contract Pot is ERC20, AuthController {
         _mint(_userAddress, 1);
     }
 
-    function decimals() public view override returns (uint8) {
+    function decimals() public pure override returns (uint8) {
         return _decimals;
     }
 }

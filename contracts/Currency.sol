@@ -9,11 +9,12 @@ contract Currency is IERC20, ERC20, AuthController {
 
     event CurrencyEarned(address _to, uint256 _amount);
 
-    constructor(string memory _name, string memory _symbol) 
-                ERC20(_name, _symbol) AuthController()
-                {
-                    _decimals = 18;
-                }
+    constructor(string memory _name, string memory _symbol)
+        ERC20(_name, _symbol)
+        AuthController()
+    {
+        _decimals = 18;
+    }
 
     function mintCurrency(address _userAddress, uint256 _amount) public {
         require(isUser[msg.sender] || isAuthorized[msg.sender], "Unauthorized");

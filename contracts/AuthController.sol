@@ -14,7 +14,7 @@ abstract contract AuthController {
         isAuthorized[_address] = true;
     }
 
-    function getAuth(address _address) external view returns(bool) {
+    function getAuth(address _address) external view returns (bool) {
         return isAuthorized[_address];
     }
 
@@ -23,7 +23,7 @@ abstract contract AuthController {
         isUser[_address] = true;
     }
 
-    function getUser(address _address) external view returns(bool) {
+    function getUser(address _address) external view returns (bool) {
         return isUser[_address];
     }
 }

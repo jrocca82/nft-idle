@@ -9,11 +9,9 @@ contract CatsAndSoup is ERC1155, AuthController {
     uint256 public constant cat = 0;
     uint256 public constant soup = 1;
 
-    constructor() ERC1155("") AuthController() {
+    constructor() ERC1155("") AuthController() {}
 
-    }
-
-    function mintItem(uint _itemId, address _to) external {
+    function mintItem(uint256 _itemId, address _to) external {
         require(isAuthorized[msg.sender], "Unauthorized");
         require(_itemId >= 0 && _itemId <= 1, "Invalid item ID");
         _mint(_to, _itemId, 1, "");

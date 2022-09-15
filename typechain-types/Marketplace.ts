@@ -25,9 +25,13 @@ export interface MarketplaceInterface extends utils.Interface {
     "buyPot(uint256)": FunctionFragment;
     "buyStarterPack(uint256)": FunctionFragment;
     "catPrice()": FunctionFragment;
+    "catsAndSoupContract()": FunctionFragment;
+    "currencyContract()": FunctionFragment;
     "getAuth(address)": FunctionFragment;
     "getUser(address)": FunctionFragment;
+    "landContract()": FunctionFragment;
     "landPrice()": FunctionFragment;
+    "potContract()": FunctionFragment;
     "potPrice()": FunctionFragment;
     "setContractAuths()": FunctionFragment;
     "soupPrice()": FunctionFragment;
@@ -51,9 +55,25 @@ export interface MarketplaceInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "catPrice", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "catsAndSoupContract",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "currencyContract",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
   encodeFunctionData(functionFragment: "getUser", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "landContract",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "landPrice", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "potContract",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "potPrice", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setContractAuths",
@@ -73,9 +93,25 @@ export interface MarketplaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "catPrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "catsAndSoupContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "currencyContract",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getUser", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "landContract",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "landPrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "potContract",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "potPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setContractAuths",
@@ -150,11 +186,19 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    catsAndSoupContract(overrides?: CallOverrides): Promise<[string]>;
+
+    currencyContract(overrides?: CallOverrides): Promise<[string]>;
+
     getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     getUser(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
+    landContract(overrides?: CallOverrides): Promise<[string]>;
+
     landPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    potContract(overrides?: CallOverrides): Promise<[string]>;
 
     potPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -189,11 +233,19 @@ export interface Marketplace extends BaseContract {
 
   catPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+  catsAndSoupContract(overrides?: CallOverrides): Promise<string>;
+
+  currencyContract(overrides?: CallOverrides): Promise<string>;
+
   getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
   getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
+  landContract(overrides?: CallOverrides): Promise<string>;
+
   landPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+  potContract(overrides?: CallOverrides): Promise<string>;
 
   potPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -219,11 +271,19 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+    catsAndSoupContract(overrides?: CallOverrides): Promise<string>;
+
+    currencyContract(overrides?: CallOverrides): Promise<string>;
+
     getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
     getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
+    landContract(overrides?: CallOverrides): Promise<string>;
+
     landPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    potContract(overrides?: CallOverrides): Promise<string>;
 
     potPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -270,11 +330,19 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+    catsAndSoupContract(overrides?: CallOverrides): Promise<BigNumber>;
+
+    currencyContract(overrides?: CallOverrides): Promise<BigNumber>;
+
     getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getUser(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    landContract(overrides?: CallOverrides): Promise<BigNumber>;
+
     landPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    potContract(overrides?: CallOverrides): Promise<BigNumber>;
 
     potPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -310,6 +378,12 @@ export interface Marketplace extends BaseContract {
 
     catPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    catsAndSoupContract(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    currencyContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getAuth(
       _address: string,
       overrides?: CallOverrides
@@ -320,7 +394,11 @@ export interface Marketplace extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    landContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     landPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    potContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     potPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

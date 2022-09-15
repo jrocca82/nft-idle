@@ -21,7 +21,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   };
 
   addresses = savedConfig[network];
-  setAddresses({"CatsAndSoup": contract.address})
+  setAddresses({...addresses, "CatsAndSoup": contract.address})
   return addresses;
 };
 

@@ -15,14 +15,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   });
   const network = process.env.HARDHAT_NETWORK?.toLowerCase();
   let addresses;
+  addresses = savedConfig[network];
 
   const setAddresses = (deltaConfig) => {
     addresses = { ...addresses, ...deltaConfig };
     updateContractConfig(network, addresses);
   };
-
-  addresses = savedConfig[network];
-  setAddresses({"Pot": contract.address})
+  setAddresses({...addresses, "Pot": contract.address})
   return addresses;
 };
 

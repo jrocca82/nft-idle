@@ -9,10 +9,10 @@ import "./Currency.sol";
 import "./AuthController.sol";
 
 contract Marketplace is AuthController {
-    Pot private potContract;
-    Land private landContract;
-    Currency private currencyContract;
-    CatsAndSoup private catsAndSoupContract;
+    Pot public potContract;
+    Land public landContract;
+    Currency public currencyContract;
+    CatsAndSoup public catsAndSoupContract;
 
     uint256 public landPrice = 1 ether;
 
@@ -27,7 +27,17 @@ contract Marketplace is AuthController {
     event Purchase(string purchaseType, address purchaser, uint256 id);
 
     constructor(
+        Pot _potContract,
+        Land _landContract,
+        Currency _currencyContract,
+        CatsAndSoup _catsAndSoupContract
     ) AuthController() {
+        landContract = _landContract;
+        potContract = _potContract;
+        currencyContract = _currencyContract;
+        catsAndSoupContract = _catsAndSoupContract;
+        landContract.setApprovalForAll(address(landContract), true);
+        catsAndSoupContract.setApprovalForAll(address(catsAndSoupContract), true);
     }
 
     function setContractAuths() public {
@@ -41,7 +51,11 @@ contract Marketplace is AuthController {
 
     function buyPot(uint256 _landId) public payable {
         require(msg.value >= potPrice);
-        require(landContract.balanceOf(msg.sender) > potContract.balanceOf(msg.sender), "You need to buy a land first");
+        require(
+            landContract.balanceOf(msg.sender) >
+                potContract.balanceOf(msg.sender),
+            "You need to buy a land first"
+        );
 
         emit Purchase("Pot", msg.sender, _landId);
 
@@ -50,7 +64,7 @@ contract Marketplace is AuthController {
     }
 
     function buyLand(uint256 _landId) public payable {
-        require(msg.value >= landPrice);
+        require(msg.value >= landPrice, "Not enough currency");
 
         emit Purchase("Land", msg.sender, _landId);
 
@@ -76,18 +90,18 @@ contract Marketplace is AuthController {
     }
 
     function buyStarterPack(uint256 _landId) public payable {
-        require(landContract.balanceOf(msg.sender) == 0, "You cannot purchase a starter pack");
-        require(msg.value >= startPackPrice, "Not enough ETH");
+        AuthController.setUser(msg.sender);
+        require(
+            landContract.balanceOf(msg.sender) == 0,
+            "You cannot purchase a starter pack"
+        );
+        require(msg.value >= startPackPrice, "Not enough currency");
 
         emit Purchase("Starter Pack", msg.sender, _landId);
 
-        AuthController.setUser(msg.sender);
-
-        // landContract.buyLand(_landId, msg.sender);
-        // potContract.mintPot(_landId, msg.sender);
-        // //mint cat
-        // catsAndSoupContract.mintItem(0, msg.sender);
-        // //mint soup
-        // catsAndSoupContract.mintItem(1, msg.sender);
+        landContract.buyLand(_landId, msg.sender);
+        potContract.mintPot(_landId, msg.sender);
+        catsAndSoupContract.mintItem(0, msg.sender);
+        catsAndSoupContract.mintItem(1, msg.sender);
     }
 }
