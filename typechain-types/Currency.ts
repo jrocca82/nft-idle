@@ -100,12 +100,10 @@ export interface CurrencyInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
-    "CurrencyEarned(address,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CurrencyEarned"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -115,13 +113,6 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-
-export type CurrencyEarnedEvent = TypedEvent<
-  [string, BigNumber],
-  { _to: string; _amount: BigNumber }
->;
-
-export type CurrencyEarnedEventFilter = TypedEventFilter<CurrencyEarnedEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -330,12 +321,6 @@ export interface Currency extends BaseContract {
       spender?: string | null,
       value?: null
     ): ApprovalEventFilter;
-
-    "CurrencyEarned(address,uint256)"(
-      _to?: null,
-      _amount?: null
-    ): CurrencyEarnedEventFilter;
-    CurrencyEarned(_to?: null, _amount?: null): CurrencyEarnedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,

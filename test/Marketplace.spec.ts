@@ -20,7 +20,6 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 chai.use(solidity);
 chai.use(chaiAsPromised);
 const startAmount = ethers.utils.parseEther("10000");
-const startPackPrice = ethers.utils.parseEther("1.5");
 const landPrice = ethers.utils.parseEther("1");
 const potPrice = ethers.utils.parseEther("0.1");
 const catsAndSoupPrice = ethers.utils.parseEther("0.5");
@@ -113,9 +112,6 @@ describe("Marketplace", () => {
     await expect(marketplace.connect(alice).buyItem(1)).to.be.revertedWith(
       "Not enough currency sent"
     );
-    await expect(
-      marketplace.connect(alice).buyStarterPack(1)
-    ).to.be.revertedWith("Not enough currency sent");
   });
 
   it("Should not mint invalid item ID", async () => {
@@ -135,15 +131,13 @@ describe("Marketplace", () => {
   });
 
   it("Should allow user to buy a starter pack", async () => {
-    const initBalance = await currency.balanceOf(alice.address);
-    await marketplace.connect(alice).buyStarterPack(0, { value: startPackPrice });
+    await marketplace.connect(alice).buyStarterPack(0);
 
     //Check Alice's token balances
     expect(await land.balanceOf(alice.address)).to.be.equal(1);
     expect(await pot.balanceOf(alice.address)).to.be.equal(1);
     expect(await catsAndSoup.balanceOf(alice.address, 0)).to.be.equal(1);
     expect(await catsAndSoup.balanceOf(alice.address, 1)).to.be.equal(1);
-    expect(await currency.balanceOf(alice.address)).to.be.equal(initBalance.sub(startPackPrice));
   });
 
   it("Should allow user to buy land", async () => {
@@ -193,9 +187,9 @@ describe("Marketplace", () => {
     expect(notUser).to.be.equal(false);
   })
 
-  it("Should not allow user with land to buy a starter pack", async () => {
+  it("Should not allow existing user", async () => {
     await expect(
-      marketplace.connect(alice).buyStarterPack(3, { value: startPackPrice })
+      marketplace.connect(alice).buyStarterPack(3)
     ).to.be.revertedWith("You cannot purchase a starter pack");
   });
 });

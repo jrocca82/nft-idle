@@ -22,8 +22,6 @@ contract Marketplace is AuthController {
 
     uint256 public soupPrice = 0.5 ether;
 
-    uint256 public startPackPrice = 1.5 ether;
-
     event Purchase(string purchaseType, address purchaser, uint256 id);
 
     constructor(
@@ -52,6 +50,7 @@ contract Marketplace is AuthController {
 
     function buyPot(uint256 _landId) public payable {
         require(msg.value >= potPrice, "Not enough currency sent");
+        AuthController.setUser(msg.sender);
 
         emit Purchase("Pot", msg.sender, _landId);
 
@@ -62,6 +61,7 @@ contract Marketplace is AuthController {
 
     function buyLand(uint256 _landId) public payable {
         require(msg.value >= landPrice, "Not enough currency sent");
+        AuthController.setUser(msg.sender);
 
         currencyContract.transferFrom(msg.sender, address(this), landPrice);
 
@@ -72,6 +72,7 @@ contract Marketplace is AuthController {
 
     function buyItem(uint256 _itemId) public payable {
         require(_itemId < 2, "This item does not exist");
+        AuthController.setUser(msg.sender);
 
         if (_itemId == 0) {
             require(msg.value >= catPrice, "Not enough currency sent");
@@ -87,14 +88,11 @@ contract Marketplace is AuthController {
     }
 
     function buyStarterPack(uint256 _landId) public payable {
-        require(msg.value >= startPackPrice, "Not enough currency sent");
-        AuthController.setUser(msg.sender);
         require(
-            landContract.balanceOf(msg.sender) == 0,
+            AuthController.isUser[msg.sender] == false,
             "You cannot purchase a starter pack"
         );
-
-        currencyContract.transferFrom(msg.sender, address(this), startPackPrice);
+        AuthController.setUser(msg.sender);
 
         emit Purchase("Starter Pack", msg.sender, _landId);
 
