@@ -138,6 +138,9 @@ describe("Marketplace", () => {
     expect(await pot.balanceOf(alice.address)).to.be.equal(1);
     expect(await catsAndSoup.balanceOf(alice.address, 0)).to.be.equal(1);
     expect(await catsAndSoup.balanceOf(alice.address, 1)).to.be.equal(1);
+
+    //Check that Alice is now a user and can access the map
+    expect(await marketplace.getUser(alice.address)).to.be.equal(true);
   });
 
   it("Should allow user to buy land", async () => {
