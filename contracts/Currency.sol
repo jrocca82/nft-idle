@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract Currency is IERC20, ERC20 {
     uint8 private immutable _decimals;
 
-    event CurrencyEarned(address _to, uint256 _amount);
-
     constructor(string memory _name, string memory _symbol)
         ERC20(_name, _symbol)
     {
@@ -15,7 +13,6 @@ contract Currency is IERC20, ERC20 {
     }
 
     function mintCurrency(address _userAddress, uint256 _amount) public {
-        emit CurrencyEarned(_userAddress, _amount);
         _mint(_userAddress, _amount);
     }
 

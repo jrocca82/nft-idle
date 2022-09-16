@@ -3,7 +3,6 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
 import { ethers } from "hardhat";
-import { parseEther } from "ethers/lib/utils";
 import {
   CatsAndSoup,
   CatsAndSoup__factory,
@@ -17,7 +16,6 @@ import {
   Pot__factory
 } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { BigNumberish } from "ethers";
 
 chai.use(solidity);
 chai.use(chaiAsPromised);
@@ -27,7 +25,7 @@ const landPrice = ethers.utils.parseEther("1");
 const potPrice = ethers.utils.parseEther("0.1");
 const catsAndSoupPrice = ethers.utils.parseEther("0.5");
 
-const setupEnvironment = async (deployer: SignerWithAddress, alice: SignerWithAddress) => {
+const setupEnvironment = async (alice: SignerWithAddress) => {
   const tokenFactory: CatsAndSoup__factory = await ethers.getContractFactory(
     "CatsAndSoup"
   );
@@ -82,7 +80,7 @@ describe("Marketplace", () => {
 
   before(async () => {
     [deployer, alice] = await ethers.getSigners();
-    const env = await setupEnvironment(deployer, alice);
+    const env = await setupEnvironment(alice);
     pot = env.pot;
     catsAndSoup = env.catsAndSoup;
     land = env.land;

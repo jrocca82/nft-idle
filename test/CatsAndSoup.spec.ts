@@ -3,7 +3,7 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { solidity } from "ethereum-waffle";
 import { ethers } from "hardhat";
-import { CatsAndSoup, CatsAndSoup__factory, Currency, Currency__factory } from "../typechain-types";
+import { CatsAndSoup, CatsAndSoup__factory } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 chai.use(solidity);
