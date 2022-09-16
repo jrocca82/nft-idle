@@ -10,7 +10,7 @@ abstract contract AuthController {
     }
 
     function setAuth(address _address) internal {
-        require(isAuthorized[msg.sender] == true);
+        require(isAuthorized[msg.sender] == true, "Auth: Unauthorized");
         isAuthorized[_address] = true;
     }
 
@@ -19,7 +19,6 @@ abstract contract AuthController {
     }
 
     function setUser(address _address) internal {
-        require(isAuthorized[msg.sender] == true);
         isUser[_address] = true;
     }
 

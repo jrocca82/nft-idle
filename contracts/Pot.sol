@@ -31,8 +31,8 @@ contract Pot is ERC20, AuthController, Ownable {
     function mintPot(uint256 _landId, address _userAddress) external {
         require(_userAddress != address(0), "Cannot mint pot to zero address");
         require(isAuthorized[msg.sender], "Pot Contract: Unauthorized");
-        landContract.assignPot(_landId, _userAddress);
         _mint(_userAddress, 1);
+        landContract.assignPot(_landId, _userAddress);
     }
 
     function decimals() public pure override returns (uint8) {

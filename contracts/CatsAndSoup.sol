@@ -21,11 +21,11 @@ contract CatsAndSoup is ERC1155, AuthController, Ownable {
             "Cannot set marketplace to 0 address"
         );
         marketplace = _marketplace;
-        setAuth(marketplace);
+        AuthController.setAuth(marketplace);
     }
 
     function mintItem(uint256 _itemId, address _to) external {
-        require(isAuthorized[msg.sender], "Cats and Soup: Unauthorized");
+        require(AuthController.isAuthorized[msg.sender], "Cats and Soup: Unauthorized");
         require(_itemId >= 0 && _itemId <= 1, "Invalid item ID");
         _mint(_to, _itemId, 1, "");
     }

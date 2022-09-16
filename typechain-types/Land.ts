@@ -25,6 +25,7 @@ export interface LandInterface extends utils.Interface {
     "assignPot(uint256,address)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "buyLand(uint256,address)": FunctionFragment;
+    "catsAndSoup()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getAuth(address)": FunctionFragment;
     "getOwner(uint256)": FunctionFragment;
@@ -38,10 +39,12 @@ export interface LandInterface extends utils.Interface {
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "pot()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setMarketplace(address)": FunctionFragment;
+    "setPotContract(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -66,6 +69,10 @@ export interface LandInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "buyLand",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "catsAndSoup",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
@@ -104,6 +111,7 @@ export interface LandInterface extends utils.Interface {
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "pot", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -118,6 +126,10 @@ export interface LandInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setMarketplace",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPotContract",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -148,6 +160,10 @@ export interface LandInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buyLand", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "catsAndSoup",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
@@ -172,6 +188,7 @@ export interface LandInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pot", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -186,6 +203,10 @@ export interface LandInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setMarketplace",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setPotContract",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -309,7 +330,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
-      _user: string,
+      _userAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -318,8 +339,10 @@ export interface Land extends BaseContract {
     buyLand(
       _landId: BigNumberish,
       _userAddress: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    catsAndSoup(overrides?: CallOverrides): Promise<[string]>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -386,6 +409,8 @@ export interface Land extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    pot(overrides?: CallOverrides): Promise<[string]>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -413,6 +438,11 @@ export interface Land extends BaseContract {
 
     setMarketplace(
       _marketplace: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setPotContract(
+      _pot: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -457,7 +487,7 @@ export interface Land extends BaseContract {
 
   assignPot(
     _landId: BigNumberish,
-    _user: string,
+    _userAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -466,8 +496,10 @@ export interface Land extends BaseContract {
   buyLand(
     _landId: BigNumberish,
     _userAddress: string,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  catsAndSoup(overrides?: CallOverrides): Promise<string>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -528,6 +560,8 @@ export interface Land extends BaseContract {
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  pot(overrides?: CallOverrides): Promise<string>;
+
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -555,6 +589,11 @@ export interface Land extends BaseContract {
 
   setMarketplace(
     _marketplace: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setPotContract(
+    _pot: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -596,7 +635,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
-      _user: string,
+      _userAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -607,6 +646,8 @@ export interface Land extends BaseContract {
       _userAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    catsAndSoup(overrides?: CallOverrides): Promise<string>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -665,6 +706,8 @@ export interface Land extends BaseContract {
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+    pot(overrides?: CallOverrides): Promise<string>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -692,6 +735,8 @@ export interface Land extends BaseContract {
       _marketplace: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setPotContract(_pot: string, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -795,7 +840,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
-      _user: string,
+      _userAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -804,8 +849,10 @@ export interface Land extends BaseContract {
     buyLand(
       _landId: BigNumberish,
       _userAddress: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    catsAndSoup(overrides?: CallOverrides): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -851,6 +898,8 @@ export interface Land extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    pot(overrides?: CallOverrides): Promise<BigNumber>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -878,6 +927,11 @@ export interface Land extends BaseContract {
 
     setMarketplace(
       _marketplace: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setPotContract(
+      _pot: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -923,7 +977,7 @@ export interface Land extends BaseContract {
 
     assignPot(
       _landId: BigNumberish,
-      _user: string,
+      _userAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -935,8 +989,10 @@ export interface Land extends BaseContract {
     buyLand(
       _landId: BigNumberish,
       _userAddress: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    catsAndSoup(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -991,6 +1047,8 @@ export interface Land extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    pot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1018,6 +1076,11 @@ export interface Land extends BaseContract {
 
     setMarketplace(
       _marketplace: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setPotContract(
+      _pot: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
