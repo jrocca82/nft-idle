@@ -141,6 +141,15 @@ contract Land is ERC721A, AuthController, Ownable {
         landData[_landId].landType = "hasPot";
     }
 
+    function removePot(uint256 _landId) public {
+        require(msg.sender == landData[_landId].owner, "You do not own this land");
+        bytes32 typeOfLand = keccak256(
+            abi.encodePacked(landData[_landId].landType)
+        );
+        require(typeOfLand == hasPot, "Cannot remove pot");
+        landData[_landId].landType = "Empty";
+    }
+
     function assignItem(uint256 _landId, uint256 _itemId) public {
         require(
             landData[_landId].owner == msg.sender,
@@ -174,6 +183,29 @@ contract Land is ERC721A, AuthController, Ownable {
         } else {
             landData[_landId].landType = "Productive";
             vault.setOwnerAndStartEarn(_landId, msg.sender);
+        }
+    }
+
+    function removeItem(uint256 _landId, uint256 _itemId) public {
+        require(msg.sender == landData[_landId].owner, "You do not own this land");
+        require(_itemId < 2, "This item does not exist");
+        bytes32 typeOfLand = keccak256(
+            abi.encodePacked(landData[_landId].landType)
+        );
+        require(typeOfLand != hasPot && typeOfLand != emptyLand, "This land has no items");
+        if(_itemId == 0){
+            if (typeOfLand == hasCat){
+                landData[_landId].landType = "hasPot";
+            } else {
+                landData[_landId].landType = "hasSoup";
+            }
+        }
+        if(_itemId == 1){
+            if (typeOfLand == hasSoup){
+                landData[_landId].landType = "hasPot";
+            } else {
+                landData[_landId].landType = "hasCat";
+            }
         }
     }
 }

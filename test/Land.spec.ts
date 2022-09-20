@@ -265,4 +265,23 @@ describe("Land", () => {
       "This land already has a cat"
     );
   });
+
+  it("Should remove pot from a land", async () => {
+    await marketplace.connect(alice).buyLand(4, { value: landPrice });
+    await marketplace.connect(alice).buyPot(4, { value: potPrice });
+    await expect(land.connect(deployer).removePot(4)).to.be.revertedWith("You do not own this land");
+    await expect(land.connect(alice).removePot(0)).to.be.revertedWith("Cannot remove pot");
+    await land.connect(alice).removePot(4);
+    expect((await land.landData(4)).landType).to.be.equal("Empty")
+  });
+
+  it("Should remove items from land", async () => {
+    await expect(land.connect(deployer).removeItem(0, 0)).to.be.revertedWith("You do not own this land");
+    await expect(land.connect(alice).removeItem(0, 2)).to.be.revertedWith("This item does not exist");
+    await land.connect(alice).removeItem(0, 0);
+    expect((await land.landData(0)).landType).to.be.equal("hasSoup");
+    await land.connect(alice).removeItem(0, 1);
+    expect((await land.landData(0)).landType).to.be.equal("hasPot");
+    await expect(land.connect(alice).removeItem(0, 1)).to.be.revertedWith("This land has no items");
+  });
 });

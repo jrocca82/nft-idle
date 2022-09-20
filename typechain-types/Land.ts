@@ -41,6 +41,8 @@ export interface LandInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "pot()": FunctionFragment;
+    "removeItem(uint256,uint256)": FunctionFragment;
+    "removePot(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -119,6 +121,14 @@ export interface LandInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "pot", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "removeItem",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removePot",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -205,6 +215,8 @@ export interface LandInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pot", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "removeItem", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "removePot", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -437,6 +449,17 @@ export interface Land extends BaseContract {
 
     pot(overrides?: CallOverrides): Promise<[string]>;
 
+    removeItem(
+      _landId: BigNumberish,
+      _itemId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    removePot(
+      _landId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -600,6 +623,17 @@ export interface Land extends BaseContract {
 
   pot(overrides?: CallOverrides): Promise<string>;
 
+  removeItem(
+    _landId: BigNumberish,
+    _itemId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  removePot(
+    _landId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -757,6 +791,14 @@ export interface Land extends BaseContract {
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     pot(overrides?: CallOverrides): Promise<string>;
+
+    removeItem(
+      _landId: BigNumberish,
+      _itemId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    removePot(_landId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -959,6 +1001,17 @@ export interface Land extends BaseContract {
 
     pot(overrides?: CallOverrides): Promise<BigNumber>;
 
+    removeItem(
+      _landId: BigNumberish,
+      _itemId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    removePot(
+      _landId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1119,6 +1172,17 @@ export interface Land extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     pot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    removeItem(
+      _landId: BigNumberish,
+      _itemId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    removePot(
+      _landId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
