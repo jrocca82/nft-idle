@@ -7,7 +7,6 @@ import { Text, Flex } from "@chakra-ui/react";
 import BaseButton from "../components/Button";
 import { useContext } from "react";
 import { ConnectionContext } from "../contexts/WalletConnection";
-import BaseModal from "../components/Modal/BaseModal";
 import StarterPackModal from "../components/Modal/StarterPackModal";
 
 const Marketplace: NextPage = () => {

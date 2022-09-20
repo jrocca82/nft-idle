@@ -4,18 +4,22 @@ import BaseModal from "./BaseModal";
 import { Text, Checkbox, Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { ConnectionContext } from "../../contexts/WalletConnection";
+import Link from "next/link";
 
 const StarterPackModal = () => {
   const { accounts } = useContext(ConnectionContext);
 
-  const mintStarterPack = () => {};
+  const mintStarterPack = () => {
+
+  };
 
   return (
     <BaseModal
       openButtonTitle="Mint a Free Starter Pack!"
       footer={
         accounts ? (
-          <BaseButton onClick={mintStarterPack}>Continue</BaseButton>
+          <Link href="/marketplace"><BaseButton>Continue</BaseButton></Link>
+          
         ) : (
           <Text>Error: cannot detect wallet address</Text>
         )
