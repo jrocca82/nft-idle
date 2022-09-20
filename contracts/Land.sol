@@ -5,6 +5,7 @@ import "erc721a/contracts/ERC721A.sol";
 import "./AuthController.sol";
 import "./CatsAndSoup.sol";
 import "./Pot.sol";
+import "./Vault.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -34,6 +35,7 @@ contract Land is ERC721A, AuthController, Ownable {
 
     CatsAndSoup public catsAndSoup;
     Pot public pot;
+    Vault public vault;
 
     address public marketplace;
 
@@ -68,12 +70,23 @@ contract Land is ERC721A, AuthController, Ownable {
     }
 
     function setPotContract(Pot _pot) public onlyOwner {
+        require(address(_pot) != address(0), "Cannot set pot to zero address");
         pot = _pot;
         AuthController.setAuth(address(pot));
     }
 
+    function setVaultContract(Vault _vault) public onlyOwner {
+        require(address(_vault) != address(0), "Cannot set pot to zero address");
+        vault = _vault;
+        AuthController.setAuth(address(vault));
+    }
+
     function getOwner(uint256 _landId) public view returns (address) {
         return landData[_landId].owner;
+    }
+
+    function getLandType(uint256 _landId) public view returns (string memory){
+        return landData[_landId].landType;
     }
 
     function initialBatchMint() public {
@@ -160,6 +173,7 @@ contract Land is ERC721A, AuthController, Ownable {
             landData[_landId].landType = "hasSoup";
         } else {
             landData[_landId].landType = "Productive";
+            vault.setOwnerAndStartEarn(_landId, msg.sender);
         }
     }
 }

@@ -24,6 +24,8 @@ export interface CurrencyInterface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "getAuth(address)": FunctionFragment;
+    "getUser(address)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "mintCurrency(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
@@ -31,6 +33,7 @@ export interface CurrencyInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "vault()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -47,6 +50,8 @@ export interface CurrencyInterface extends utils.Interface {
     functionFragment: "decreaseAllowance",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
+  encodeFunctionData(functionFragment: "getUser", values: [string]): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
@@ -69,6 +74,7 @@ export interface CurrencyInterface extends utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
@@ -78,6 +84,8 @@ export interface CurrencyInterface extends utils.Interface {
     functionFragment: "decreaseAllowance",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getUser", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
@@ -97,6 +105,7 @@ export interface CurrencyInterface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -170,6 +179,10 @@ export interface Currency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    getUser(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -200,6 +213,8 @@ export interface Currency extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<[string]>;
   };
 
   allowance(
@@ -223,6 +238,10 @@ export interface Currency extends BaseContract {
     subtractedValue: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
   increaseAllowance(
     spender: string,
@@ -255,6 +274,8 @@ export interface Currency extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  vault(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     allowance(
       owner: string,
@@ -277,6 +298,10 @@ export interface Currency extends BaseContract {
       subtractedValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getUser(_address: string, overrides?: CallOverrides): Promise<boolean>;
 
     increaseAllowance(
       spender: string,
@@ -308,6 +333,8 @@ export interface Currency extends BaseContract {
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    vault(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -357,6 +384,10 @@ export interface Currency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getUser(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -387,6 +418,8 @@ export interface Currency extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    vault(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -413,6 +446,16 @@ export interface Currency extends BaseContract {
       spender: string,
       subtractedValue: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getAuth(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUser(
+      _address: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     increaseAllowance(
@@ -445,5 +488,7 @@ export interface Currency extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

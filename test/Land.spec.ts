@@ -13,7 +13,9 @@ import {
   Marketplace__factory,
   Marketplace,
   Pot,
-  Pot__factory
+  Pot__factory,
+  Vault__factory,
+  Vault
 } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { getEventData } from "./helpers/utils";
@@ -25,9 +27,7 @@ const landPrice = ethers.utils.parseEther("1");
 const potPrice = ethers.utils.parseEther("0.1");
 const catsAndSoupPrice = ethers.utils.parseEther("0.5");
 
-const setupEnvironment = async (
-  alice: SignerWithAddress
-) => {
+const setupEnvironment = async (alice: SignerWithAddress) => {
   const tokenFactory: CatsAndSoup__factory = await ethers.getContractFactory(
     "CatsAndSoup"
   );
@@ -44,15 +44,6 @@ const setupEnvironment = async (
     catsAndSoup.address
   )) as unknown as Land;
 
-  const currencyFactory: Currency__factory = await ethers.getContractFactory(
-    "Currency"
-  );
-
-  const currency = (await currencyFactory.deploy(
-    "Currency",
-    "CNY"
-  )) as unknown as Currency;
-
   const potFactory: Pot__factory = await ethers.getContractFactory("Pot");
 
   const pot = (await potFactory.deploy(
@@ -60,6 +51,20 @@ const setupEnvironment = async (
     "SPT",
     land.address
   )) as unknown as Pot;
+
+  const vaultFactory: Vault__factory = await ethers.getContractFactory("Vault");
+
+  const vault = (await vaultFactory.deploy(land.address)) as unknown as Vault;
+  
+  const currencyFactory: Currency__factory = await ethers.getContractFactory(
+    "Currency"
+  );
+
+  const currency = (await currencyFactory.deploy(
+    "Currency",
+    "CNY",
+    vault.address
+  )) as unknown as Currency;
 
   const mFactory: Marketplace__factory = await ethers.getContractFactory(
     "Marketplace"
@@ -69,12 +74,16 @@ const setupEnvironment = async (
     pot.address,
     land.address,
     currency.address,
-    catsAndSoup.address
+    catsAndSoup.address,
+    vault.address
   )) as unknown as Marketplace;
   await currency.connect(alice).approve(marketplace.address, startAmount);
-  await currency.connect(alice).mintCurrency(alice.address, startAmount);
 
-  return { pot, catsAndSoup, land, currency, marketplace };
+  //Deployer mints currency to alice for testing purposes
+  await currency.mintCurrency(alice.address, startAmount);
+  await marketplace.setContractAuths();
+
+  return { pot, catsAndSoup, land, currency, marketplace, vault };
 };
 
 describe("Land", () => {
@@ -83,6 +92,7 @@ describe("Land", () => {
   let catsAndSoup: CatsAndSoup;
   let marketplace: Marketplace;
   let pot: Pot;
+  let vault: Vault;
   let deployer: SignerWithAddress, alice: SignerWithAddress;
 
   before(async () => {
@@ -92,6 +102,7 @@ describe("Land", () => {
     catsAndSoup = env.catsAndSoup;
     land = env.land;
     currency = env.currency;
+    vault = env.vault;
     marketplace = env.marketplace;
 
     //Set marketplaces and batch mint initial lands
@@ -117,7 +128,6 @@ describe("Land", () => {
   });
 
   it("Should allow only owner to set contract addresses to non-zero address", async () => {
-    land.connect(deployer);
     await expect(
       land.setMarketplace(ethers.constants.AddressZero)
     ).to.be.revertedWith("Cannot set marketplace to 0 address");
@@ -148,6 +158,11 @@ describe("Land", () => {
 
   it("Should set pot address", async () => {
     await land.setPotContract(pot.address);
+    expect(await land.pot()).to.be.equal(pot.address);
+  });
+
+  it("Should set vault address", async () => {
+    await land.setVaultContract(vault.address);
     expect(await land.pot()).to.be.equal(pot.address);
   });
 

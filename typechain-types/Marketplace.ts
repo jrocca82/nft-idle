@@ -35,6 +35,7 @@ export interface MarketplaceInterface extends utils.Interface {
     "potPrice()": FunctionFragment;
     "setContractAuths()": FunctionFragment;
     "soupPrice()": FunctionFragment;
+    "vault()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -79,6 +80,7 @@ export interface MarketplaceInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "soupPrice", values?: undefined): string;
+  encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "buyItem", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buyLand", data: BytesLike): Result;
@@ -113,6 +115,7 @@ export interface MarketplaceInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "soupPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
     "Purchase(string,address,uint256)": EventFragment;
@@ -198,6 +201,8 @@ export interface Marketplace extends BaseContract {
     ): Promise<ContractTransaction>;
 
     soupPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    vault(overrides?: CallOverrides): Promise<[string]>;
   };
 
   buyItem(
@@ -244,6 +249,8 @@ export interface Marketplace extends BaseContract {
 
   soupPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+  vault(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     buyItem(_itemId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -277,6 +284,8 @@ export interface Marketplace extends BaseContract {
     setContractAuths(overrides?: CallOverrides): Promise<void>;
 
     soupPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vault(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -336,6 +345,8 @@ export interface Marketplace extends BaseContract {
     ): Promise<BigNumber>;
 
     soupPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vault(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -390,5 +401,7 @@ export interface Marketplace extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     soupPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

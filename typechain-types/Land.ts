@@ -28,6 +28,7 @@ export interface LandInterface extends utils.Interface {
     "catsAndSoup()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getAuth(address)": FunctionFragment;
+    "getLandType(uint256)": FunctionFragment;
     "getOwner(uint256)": FunctionFragment;
     "getUser(address)": FunctionFragment;
     "initialBatchMint()": FunctionFragment;
@@ -45,12 +46,14 @@ export interface LandInterface extends utils.Interface {
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setMarketplace(address)": FunctionFragment;
     "setPotContract(address)": FunctionFragment;
+    "setVaultContract(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "vault()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -79,6 +82,10 @@ export interface LandInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "getAuth", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getLandType",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "getOwner",
     values: [BigNumberish]
@@ -133,6 +140,10 @@ export interface LandInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "setVaultContract",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -153,6 +164,7 @@ export interface LandInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "assignItem", data: BytesLike): Result;
@@ -168,6 +180,10 @@ export interface LandInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getAuth", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getLandType",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getOwner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getUser", data: BytesLike): Result;
   decodeFunctionResult(
@@ -210,6 +226,10 @@ export interface LandInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setVaultContract",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
@@ -227,6 +247,7 @@ export interface LandInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -351,6 +372,11 @@ export interface Land extends BaseContract {
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<[boolean]>;
 
+    getLandType(
+      _landId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     getOwner(
       _landId: BigNumberish,
       overrides?: CallOverrides
@@ -446,6 +472,11 @@ export interface Land extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setVaultContract(
+      _vault: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -471,6 +502,8 @@ export interface Land extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<[string]>;
   };
 
   approve(
@@ -507,6 +540,11 @@ export interface Land extends BaseContract {
   ): Promise<string>;
 
   getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+  getLandType(
+    _landId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   getOwner(_landId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -597,6 +635,11 @@ export interface Land extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setVaultContract(
+    _vault: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -619,6 +662,8 @@ export interface Land extends BaseContract {
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  vault(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     approve(
@@ -655,6 +700,11 @@ export interface Land extends BaseContract {
     ): Promise<string>;
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<boolean>;
+
+    getLandType(
+      _landId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     getOwner(_landId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
@@ -738,6 +788,8 @@ export interface Land extends BaseContract {
 
     setPotContract(_pot: string, overrides?: CallOverrides): Promise<void>;
 
+    setVaultContract(_vault: string, overrides?: CallOverrides): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -760,6 +812,8 @@ export interface Land extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    vault(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -861,6 +915,11 @@ export interface Land extends BaseContract {
 
     getAuth(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getLandType(
+      _landId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getOwner(
       _landId: BigNumberish,
       overrides?: CallOverrides
@@ -935,6 +994,11 @@ export interface Land extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setVaultContract(
+      _vault: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -960,6 +1024,8 @@ export interface Land extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    vault(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1001,6 +1067,11 @@ export interface Land extends BaseContract {
 
     getAuth(
       _address: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getLandType(
+      _landId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1084,6 +1155,11 @@ export interface Land extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setVaultContract(
+      _vault: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1109,5 +1185,7 @@ export interface Land extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

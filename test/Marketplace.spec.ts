@@ -13,7 +13,9 @@ import {
   Marketplace__factory,
   Marketplace,
   Pot,
-  Pot__factory
+  Pot__factory,
+  Vault__factory,
+  Vault
 } from "../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
@@ -34,16 +36,12 @@ const setupEnvironment = async (alice: SignerWithAddress) => {
   const landFactory: Land__factory = await ethers.getContractFactory("Land");
 
   //Max supply set to 10
-  const land = (await landFactory.deploy("Land", "LND", 10, catsAndSoup.address)) as unknown as Land;
-
-  const currencyFactory: Currency__factory = await ethers.getContractFactory(
-    "Currency"
-  );
-
-  const currency = (await currencyFactory.deploy(
-    "Currency",
-    "CNY"
-  )) as unknown as Currency;
+  const land = (await landFactory.deploy(
+    "Land",
+    "LND",
+    10,
+    catsAndSoup.address
+  )) as unknown as Land;
 
   const potFactory: Pot__factory = await ethers.getContractFactory("Pot");
 
@@ -53,6 +51,20 @@ const setupEnvironment = async (alice: SignerWithAddress) => {
     land.address
   )) as unknown as Pot;
 
+  const vaultFactory: Vault__factory = await ethers.getContractFactory("Vault");
+
+  const vault = (await vaultFactory.deploy(land.address)) as unknown as Vault;
+  
+  const currencyFactory: Currency__factory = await ethers.getContractFactory(
+    "Currency"
+  );
+
+  const currency = (await currencyFactory.deploy(
+    "Currency",
+    "CNY",
+    vault.address
+  )) as unknown as Currency;
+
   const mFactory: Marketplace__factory = await ethers.getContractFactory(
     "Marketplace"
   );
@@ -61,12 +73,15 @@ const setupEnvironment = async (alice: SignerWithAddress) => {
     pot.address,
     land.address,
     currency.address,
-    catsAndSoup.address
-    )) as unknown as Marketplace;
-    await currency.connect(alice).approve(marketplace.address, startAmount);
-    await currency.connect(alice).mintCurrency(alice.address, startAmount);
+    catsAndSoup.address,
+    vault.address
+  )) as unknown as Marketplace;
+  await currency.connect(alice).approve(marketplace.address, startAmount);
 
-  return { pot, catsAndSoup, land, currency, marketplace };
+  //Deployer mints currency to alice for testing purposes
+  await currency.mintCurrency(alice.address, startAmount);
+
+  return { pot, catsAndSoup, land, currency, marketplace, vault };
 };
 
 describe("Marketplace", () => {
@@ -75,6 +90,7 @@ describe("Marketplace", () => {
   let catsAndSoup: CatsAndSoup;
   let marketplace: Marketplace;
   let pot: Pot;
+  let vault: Vault;
   let deployer: SignerWithAddress, alice: SignerWithAddress;
 
   before(async () => {
@@ -83,6 +99,7 @@ describe("Marketplace", () => {
     pot = env.pot;
     catsAndSoup = env.catsAndSoup;
     land = env.land;
+    vault = env.vault;
     currency = env.currency;
     marketplace = env.marketplace;
 
@@ -90,6 +107,7 @@ describe("Marketplace", () => {
     await land.setMarketplace(marketplace.address);
     await pot.setMarketplace(marketplace.address);
     await catsAndSoup.setMarketplace(marketplace.address);
+    await vault.setMarketplace(marketplace.address);
     await land.setPotContract(pot.address);
     await land.initialBatchMint();
   });
@@ -150,7 +168,9 @@ describe("Marketplace", () => {
     await marketplace.connect(alice).buyLand(2, { value: landPrice });
 
     expect(await land.balanceOf(alice.address)).to.be.equal(2);
-    expect(await currency.balanceOf(alice.address)).to.be.equal(initBalance.sub(landPrice));
+    expect(await currency.balanceOf(alice.address)).to.be.equal(
+      initBalance.sub(landPrice)
+    );
   });
 
   it("Should allow user to buy pot", async () => {
@@ -158,9 +178,11 @@ describe("Marketplace", () => {
 
     //Buy pot to mint to land ID 2-- purchased in previous test
     await marketplace.connect(alice).buyPot(2, { value: potPrice });
-    
+
     expect(await pot.balanceOf(alice.address)).to.be.equal(2);
-    expect(await currency.balanceOf(alice.address)).to.be.equal(initBalance.sub(potPrice));
+    expect(await currency.balanceOf(alice.address)).to.be.equal(
+      initBalance.sub(potPrice)
+    );
   });
 
   it("Should allow user to buy cat", async () => {
@@ -168,9 +190,11 @@ describe("Marketplace", () => {
 
     //Buy cat-- itemId 0
     await marketplace.connect(alice).buyItem(0, { value: catsAndSoupPrice });
-    
+
     expect(await catsAndSoup.balanceOf(alice.address, 0)).to.be.equal(2);
-    expect(await currency.balanceOf(alice.address)).to.be.equal(initBalance.sub(catsAndSoupPrice));
+    expect(await currency.balanceOf(alice.address)).to.be.equal(
+      initBalance.sub(catsAndSoupPrice)
+    );
   });
 
   it("Should allow user to buy soup", async () => {
@@ -178,17 +202,19 @@ describe("Marketplace", () => {
 
     //Buy soup-- itemId 1
     await marketplace.connect(alice).buyItem(1, { value: catsAndSoupPrice });
-    
+
     expect(await catsAndSoup.balanceOf(alice.address, 1)).to.be.equal(2);
-    expect(await currency.balanceOf(alice.address)).to.be.equal(initBalance.sub(catsAndSoupPrice));
+    expect(await currency.balanceOf(alice.address)).to.be.equal(
+      initBalance.sub(catsAndSoupPrice)
+    );
   });
 
-  it("Should get existing user status", async() => {
+  it("Should get existing user status", async () => {
     const user = await marketplace.getUser(alice.address);
     const notUser = await marketplace.getUser(deployer.address);
     expect(user).to.be.equal(true);
     expect(notUser).to.be.equal(false);
-  })
+  });
 
   it("Should not allow existing user", async () => {
     await expect(

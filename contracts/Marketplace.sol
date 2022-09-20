@@ -7,12 +7,14 @@ import "./Pot.sol";
 import "./CatsAndSoup.sol";
 import "./Currency.sol";
 import "./AuthController.sol";
+import "./Vault.sol";
 
 contract Marketplace is AuthController {
     Pot public potContract;
     Land public landContract;
     Currency public currencyContract;
     CatsAndSoup public catsAndSoupContract;
+    Vault public vault;
 
     uint256 public landPrice = 1 ether;
 
@@ -28,12 +30,14 @@ contract Marketplace is AuthController {
         Pot _potContract,
         Land _landContract,
         Currency _currencyContract,
-        CatsAndSoup _catsAndSoupContract
+        CatsAndSoup _catsAndSoupContract,
+        Vault _vault
     ) AuthController() {
         landContract = _landContract;
         potContract = _potContract;
         currencyContract = _currencyContract;
         catsAndSoupContract = _catsAndSoupContract;
+        vault = _vault;
         AuthController.setAuth(msg.sender);
         landContract.setApprovalForAll(address(landContract), true);
         catsAndSoupContract.setApprovalForAll(address(catsAndSoupContract), true);
@@ -42,6 +46,7 @@ contract Marketplace is AuthController {
     function setContractAuths() public {
         require(AuthController.isAuthorized[msg.sender], "Marketplace: Unauthorized");
         AuthController.setAuth(address(this));
+        AuthController.setAuth(address(vault));
         AuthController.setAuth(address(potContract));
         AuthController.setAuth(address(landContract));
         AuthController.setAuth(address(currencyContract));
