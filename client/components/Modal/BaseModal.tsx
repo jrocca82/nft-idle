@@ -17,20 +17,22 @@ type ModalProps = {
   footer: ReactNode;
   title: string;
   children: ReactNode;
+  disallowCloseModal?: boolean;
 };
 
 const BaseModal = ({
   children,
   openButtonTitle,
   title,
-  footer
+  footer,
+  disallowCloseModal
 }: ModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
       <BaseButton onClick={onOpen}>{openButtonTitle}</BaseButton>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl" closeOnOverlayClick={disallowCloseModal ? false : true}>
         <ModalOverlay />
         <ModalContent textAlign="center" height="80vh">
           <ModalHeader>
@@ -43,7 +45,7 @@ const BaseModal = ({
               {title}
             </Heading>
           </ModalHeader>
-          <ModalCloseButton />
+          {disallowCloseModal ? null : <ModalCloseButton />}
           <ModalBody justifyContent="space-between">{children}</ModalBody>
 
           <ModalFooter flexDirection="column">

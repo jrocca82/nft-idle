@@ -5,8 +5,10 @@ import { Text, Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { ConnectionContext } from "../../../contexts/WalletConnection";
 import Link from "next/link";
-import * as addresses from "../../../abis/contracts.json";
-import truncateEthAddress from 'truncate-eth-address'
+import contracts from "../../../abis/contracts.json";
+import truncateEthAddress from "truncate-eth-address";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import CopyText from "../../CopyAddressText";
 
 type SuccessModalProps = {
   purchaseType: string;
@@ -18,6 +20,7 @@ const SuccessModal = ({ purchaseType }: SuccessModalProps) => {
   return (
     <BaseModal
       openButtonTitle="Mint!"
+      disallowCloseModal={true}
       footer={
         accounts ? (
           <>
@@ -41,11 +44,26 @@ const SuccessModal = ({ purchaseType }: SuccessModalProps) => {
         {accounts ? accounts[0] : "Error connecting wallet, please try again"}
       </EmphText>
       <Text>You may have to import the tokens to see them in your wallet:</Text>
-      <Text>Land Token Address: {truncateEthAddress(addresses.goerli.Land)}</Text>
-      <Text>Pot Address:{truncateEthAddress(addresses.goerli.Pot)}</Text>
-      <Text>Cats And Soup Address:{truncateEthAddress(addresses.goerli.CatsAndSoup)}</Text>
-      <EmphText>You may also want to import our utility token, which you will earn in-game:</EmphText>
-      <Text>Currency Address: {truncateEthAddress(addresses.goerli.Currency)}</Text>
+      <Flex textAlign="center" justifyContent="center">
+        <Text mr="10px">Land Address: </Text>
+        <CopyText address={true} text={contracts.goerli.Land} />
+      </Flex>
+      <Flex textAlign="center" justifyContent="center">
+        <Text mr="10px">Pot Address: </Text>
+        <CopyText address={true} text={contracts.goerli.Pot} />
+      </Flex>
+      <Flex textAlign="center" justifyContent="center">
+        <Text mr="10px">Cats and Soup Address: </Text>
+        <CopyText address={true} text={contracts.goerli.CatsAndSoup} />
+      </Flex>
+      <EmphText>
+        You may also want to import our utility token, which you will earn
+        in-game:
+      </EmphText>
+      <Flex textAlign="center" justifyContent="center">
+        <Text mr="10px">Currency Address: </Text>
+        <CopyText address={true} text={contracts.goerli.Currency} />
+      </Flex>
     </BaseModal>
   );
 };
