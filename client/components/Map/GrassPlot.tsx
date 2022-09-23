@@ -1,9 +1,6 @@
 import * as THREE from "three";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Vector3 } from "@react-three/fiber";
-import { Suspense } from 'react';
-import { Canvas, useLoader } from '@react-three/fiber';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 
 type Props = {
   position: Vector3;

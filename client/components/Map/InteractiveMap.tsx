@@ -1,17 +1,14 @@
-import * as THREE from "three";
-import { useRef, Suspense, useState } from "react";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { MapControls, Sky, Stars } from "@react-three/drei";
-import { TextureLoader } from "three";
+import { Suspense, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { MapControls } from "@react-three/drei";
 import { BaseMap } from "./BaseMap";
 import { Physics } from "@react-three/cannon";
 import GrassPlot from "./GrassPlot";
 
-export const InteractiveMap = (props: JSX.IntrinsicElements["mesh"]) => {
-  const ref = useRef<THREE.Mesh>(null!);
+export const InteractiveMap = () => {
   const [color, setColor] = useState<string>("#CCEEAB");
 
-  const handleClick = (landId: number) => {
+  const handleClick = () => {
     setColor("#FACBC4");
   };
 

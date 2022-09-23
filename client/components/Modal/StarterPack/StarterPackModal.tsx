@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
-import BaseButton from "../../Button";
 import BaseModal from "../BaseModal";
 import { Text, Checkbox, Flex } from "@chakra-ui/react";
-import styled from "@emotion/styled";
 import { ConnectionContext } from "../../../contexts/WalletConnection";
 import MapModal from "./MapModal";
 
@@ -14,14 +12,14 @@ const StarterPackModal = () => {
       openButtonTitle="Mint a Free Starter Pack!"
       footer={
         accounts ? (
-          <MapModal/>
+          <MapModal />
         ) : (
           <Text>Error: cannot detect wallet address</Text>
         )
       }
       title="Mint a free starter pack!"
     >
-      <ContentWrapper>
+      <Flex style={{ alignSelf: "center" }}>
         <Text>
           Your starter pack includes a land token (ERC721), pot token (ERC20),
           cat token (ERC1155), and soup token (ERC1155), minted to one address.
@@ -31,36 +29,27 @@ const StarterPackModal = () => {
           wallet addresses required to play the game. Please confirm this is the
           address you would like to create an account with:
         </Text>
-        <EmphText>
+        <Flex style={{ fontWeight: "bold", alignSelf: "center" }}>
           {accounts ? accounts[0] : "Error connecting wallet, please try again"}
-        </EmphText>
-        <CheckWrapper>
+        </Flex>
+        <Flex
+          style={{
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "100%",
+          }}
+        >
           <Checkbox defaultChecked colorScheme="green">
             <Text>Yes, this is the address I would like to use.</Text>
           </Checkbox>
-        </CheckWrapper>
-        <EmphText>
+        </Flex>
+        <Flex style={{ fontWeight: "bold", alignSelf: "center" }}>
           If your address is incorrect, please exit this modal, disconnect your
           wallet in Metamask, and refresh the page to reconnect.
-        </EmphText>
-      </ContentWrapper>
+        </Flex>
+      </Flex>
     </BaseModal>
   );
 };
 
 export default StarterPackModal;
-
-const ContentWrapper = styled(Flex)({
-  flexDirection: "column",
-  justifyContent: "space-between",
-  height: "100%",
-});
-
-const CheckWrapper = styled(Flex)({
-  alignSelf: "center",
-});
-
-const EmphText = styled(Flex)({
-  fontWeight: "bold",
-  alignSelf: "center",
-});
