@@ -6,6 +6,7 @@ import styled from "@emotion/styled";
 import { ConnectionContext } from "../../../contexts/WalletConnection";
 import Link from "next/link";
 import { InteractiveMap } from "../../Map/InteractiveMap";
+import SuccessModal from "./SuccessModal";
 
 const MapModal = () => {
   const { accounts } = useContext(ConnectionContext);
@@ -15,9 +16,7 @@ const MapModal = () => {
       openButtonTitle="Continue"
       footer={
         accounts ? (
-          <Link href="/marketplace">
-            <BaseButton>Continue</BaseButton>
-          </Link>
+          <SuccessModal purchaseType="a starter pack"/>
         ) : (
           <Text>Error: cannot detect wallet address</Text>
         )
@@ -28,9 +27,11 @@ const MapModal = () => {
         Minting to:{" "}
         {accounts ? accounts[0] : "Error connecting wallet, please try again"}
       </EmphText>
-      <div style={{ height: "40vh", width: "100%" }}>
+      <div style={{ height: "35vh", width: "100%" }}>
         <InteractiveMap />
       </div>
+      <EmphText>Please make sure your wallet is connected to Goerli Testnet.</EmphText>
+      <EmphText>You may have to confirm the transactions in Metamask.</EmphText>
     </BaseModal>
   );
 };
@@ -39,5 +40,7 @@ export default MapModal;
 
 const EmphText = styled(Flex)({
   fontWeight: "bold",
-  alignSelf: "center",
+  justifyContent: "center",
+  marginBottom: "10px",
+  marginTop: "10px"
 });

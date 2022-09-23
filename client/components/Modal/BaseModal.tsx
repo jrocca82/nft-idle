@@ -46,7 +46,7 @@ const BaseModal = ({
           <ModalCloseButton />
           <ModalBody justifyContent="space-between">{children}</ModalBody>
 
-          <ModalFooter>
+          <ModalFooter flexDirection="column">
             {footer}
           </ModalFooter>
         </ModalContent>
