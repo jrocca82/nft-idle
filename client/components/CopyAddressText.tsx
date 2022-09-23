@@ -15,7 +15,7 @@ const CopyText = ({text, address}: CopyTextProps) => {
       text={text}
       onCopy={() => setCopyText({ copiedText: text })}
     >
-        <Text cursor={"pointer"}>{address ? truncateEthAddress(text) : text}</Text>
+        <Text as="u" cursor={"pointer"}>{address ? truncateEthAddress(text) : text}</Text>
     </CopyToClipboard>
   );
 };

@@ -6,8 +6,6 @@ import styled from "@emotion/styled";
 import { ConnectionContext } from "../../../contexts/WalletConnection";
 import Link from "next/link";
 import contracts from "../../../abis/contracts.json";
-import truncateEthAddress from "truncate-eth-address";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import CopyText from "../../CopyAddressText";
 
 type SuccessModalProps = {

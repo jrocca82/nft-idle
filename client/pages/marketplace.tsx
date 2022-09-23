@@ -8,6 +8,9 @@ import BaseButton from "../components/Button";
 import { useContext } from "react";
 import { ConnectionContext } from "../contexts/WalletConnection";
 import StarterPackModal from "../components/Modal/StarterPack/StarterPackModal";
+import CopyText from "../components/CopyAddressText";
+import contracts from "../abis/contracts.json";
+import truncateEthAddress from "truncate-eth-address";
 
 const Marketplace: NextPage = () => {
   const { accounts, connectWallet } = useContext(ConnectionContext);
@@ -33,11 +36,29 @@ const Marketplace: NextPage = () => {
         which you can then spend on more items in our marketplace.
       </HeaderText>
       <HeaderText>
-        All transactions must go through our <Text as="u">marketplace contract</Text> and are
-        recorded on-chain. 
-       
+        All transactions must go through our{" "}
+        <a
+          target={"_blank"}
+          href={`https://goerli.etherscan.io/address/${contracts.goerli.Marketplace}#code`}
+        >
+          <Text as="u" cursor="pointer">
+            marketplace contract
+          </Text>
+        </a>{" "}
+        and are recorded on-chain.
       </HeaderText>
-    <HeaderText>NFT Idle Game was inspired by the off-chain game <Text as="u">Cats and Soup</Text>.</HeaderText>
+      <HeaderText>
+        NFT Idle Game was inspired by the off-chain game{" "}
+        <a
+          target={"_blank"}
+          href="https://www.google.com/search?q=cats+and+soup&oq=cats+and+soup&aqs=chrome.0.69i59j69i57j0i271l2j69i59j69i60l3.1436j0j7&sourceid=chrome&ie=UTF-8"
+        >
+          <Text cursor="pointer" as="u">
+            Cats and Soup
+          </Text>
+        </a>
+        .
+      </HeaderText>
       <ButtonWrapper>
         {accounts ? (
           <StarterPackModal />
@@ -54,8 +75,15 @@ const Marketplace: NextPage = () => {
             unique ERC721 collectible token (NFT).. When it contains a pot, cat,
             and soup, it can earn you coins to buy more tokens!
           </SectionText>
-          <SectionText>Contract address: 0xe3e5t...3f55</SectionText>
-          <SectionText>View on Etherscan</SectionText>
+          <SectionText>
+            Contract address:{" "}
+            <a
+              target={"_blank"}
+              href={`https://goerli.etherscan.io/address/${contracts.goerli.Land}#code`}
+            >
+              <Text as="u" cursor="pointer">{truncateEthAddress(contracts.goerli.Land)}</Text>
+            </a>
+          </SectionText>
         </Section>
         <Section sectionTitle="Pot: ERC20" bgColor="brand.green" width="30%">
           <SectionText>
@@ -64,8 +92,15 @@ const Marketplace: NextPage = () => {
             your land so it is ready for your cat to make soup and earn you
             coins!
           </SectionText>
-          <SectionText>Contract address: 0xe3e5t...3f55</SectionText>
-          <SectionText>View on Etherscan</SectionText>
+          <SectionText>
+            Contract address:{" "}
+            <a
+              target={"_blank"}
+              href={`https://goerli.etherscan.io/address/${contracts.goerli.Pot}#code`}
+            >
+              <Text as="u" cursor="pointer">{truncateEthAddress(contracts.goerli.Pot)}</Text>
+            </a>
+          </SectionText>
         </Section>
         <Section
           sectionTitle="Other: ERC1155"
@@ -78,8 +113,15 @@ const Marketplace: NextPage = () => {
             of cat or soup with an id number. Once you have a land, pot, cat,
             and soup, you’re ready to earn coins!
           </SectionText>
-          <SectionText>Contract address: 0xe3e5t...3f55</SectionText>
-          <SectionText>View on Etherscan</SectionText>
+          <SectionText>
+            Contract address:{" "}
+            <a
+              target={"_blank"}
+              href={`https://goerli.etherscan.io/address/${contracts.goerli.CatsAndSoup}#code`}
+            >
+              <Text as="u" cursor="pointer">{truncateEthAddress(contracts.goerli.CatsAndSoup)}</Text>
+            </a>
+          </SectionText>
         </Section>
       </Sections>
     </PageWrapper>
@@ -114,5 +156,5 @@ const SectionText = styled(Text)({
 const ButtonWrapper = styled(Flex)({
   alignSelf: "flex-end",
   marginRight: "100px",
-  marginTop: "-50px"
+  marginTop: "-50px",
 });
