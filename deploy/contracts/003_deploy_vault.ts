@@ -1,7 +1,7 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ethers } from "hardhat";
-import { CatsAndSoup } from "../../typechain-types";
+import { Land } from "../../typechain-types";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   
@@ -9,15 +9,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const catsAndSoup = await ethers.getContract("CatsAndSoup") as CatsAndSoup;
+  const land = await ethers.getContract("Land") as Land;
 
-  const contract = await deploy("Land", {
+  const contract = await deploy("Vault", {
     from: deployer,
-    args:["Land", "LND", 10, catsAndSoup.address],
+    args:[land.address],
     log: true
   });
-  console.log(`Land deployed to ${contract.address}`)
+  console.log(`Vault deployed to ${contract.address}`)
 };
 
 export default func;
-func.tags = ["testbed", "_Land"];
+func.tags = ["testbed", "_Vault"];

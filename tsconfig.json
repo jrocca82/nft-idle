@@ -20,6 +20,6 @@
     "./scripts",
     "./deploy",
     "./test"
-  ],
+, "004_deploy_currency.ts", "003_deploy_vault.ts", "002_deploy_pot.ts", "001_deploy_land.ts", "002_deploy_pot.ts", "000_deploy_cats_and_soup.ts", "001_deploy_land.ts"  ],
   "files": ["./hardhat.config.ts"]
 }
