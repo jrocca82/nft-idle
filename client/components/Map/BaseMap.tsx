@@ -8,7 +8,7 @@ export const BaseMap = (props: JSX.IntrinsicElements["mesh"]) => {
 
   return (
     <mesh {...props} ref={ref} position={[0, 0, 0]}>
-      <boxGeometry args={[100, 100]} />
+      <boxGeometry args={[120, 120]} />
       <meshStandardMaterial color={"#ADD8E6"} />
     </mesh>
   );

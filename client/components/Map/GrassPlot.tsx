@@ -8,15 +8,17 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader';
 type Props = {
   position: Vector3;
   landId: number;
+  handleClick: () => void;
+  color: string;
 };
 
 const GrassPlot = (props: JSX.IntrinsicElements["mesh"] & Props) => {
   const ref = useRef<THREE.Mesh>(null!);
 
   return (
-    <mesh {...props} ref={ref} position={props.position}>
+    <mesh {...props} ref={ref} position={props.position} onClick={props.handleClick}>
       <planeBufferGeometry attach="geometry" args={[10, 10, 10, 10]} />
-      <meshStandardMaterial color={"#CCEEAB"} />
+      <meshStandardMaterial color={props.color} />
     </mesh>
   );
 };

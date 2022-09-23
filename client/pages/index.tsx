@@ -6,6 +6,7 @@ import styled from "@emotion/styled";
 import { Text, Flex, Heading } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
+  
   return (
     <PageWrapper>
       <Head>

@@ -1,10 +1,8 @@
 import React, { useContext } from "react";
-import BaseButton from "../../Button";
 import BaseModal from "../BaseModal";
-import { Text, Checkbox, Flex } from "@chakra-ui/react";
+import { Text, Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { ConnectionContext } from "../../../contexts/WalletConnection";
-import Link from "next/link";
 import { InteractiveMap } from "../../Map/InteractiveMap";
 import SuccessModal from "./SuccessModal";
 
