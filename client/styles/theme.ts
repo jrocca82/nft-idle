@@ -11,7 +11,8 @@ const customTheme = extendTheme({
     brand: {
       yellow: "#FDEFAD",
       green: "#CCEEAB",
-      pink: "#FACBC4"
+      pink: "#FACBC4",
+      blue: "#add8e6"
     }
   }
 });

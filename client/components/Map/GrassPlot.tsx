@@ -12,16 +12,11 @@ type Props = {
 
 const GrassPlot = (props: JSX.IntrinsicElements["mesh"] & Props) => {
   const ref = useRef<THREE.Mesh>(null!);
-  const grass = useLoader(TextureLoader, 'textures/grass.jpg'); 
 
   return (
-    <mesh
-      {...props}
-      ref={ref}
-      position={props.position}
-    >
-      <planeBufferGeometry attach="geometry" args={[1, 1, 1, 1]} />
-      <meshBasicMaterial map={grass} />
+    <mesh {...props} ref={ref} position={props.position}>
+      <planeBufferGeometry attach="geometry" args={[10, 10, 10, 10]} />
+      <meshStandardMaterial color={"#CCEEAB"} />
     </mesh>
   );
 };

@@ -7,7 +7,7 @@ import { Text, Flex } from "@chakra-ui/react";
 import BaseButton from "../components/Button";
 import { useContext } from "react";
 import { ConnectionContext } from "../contexts/WalletConnection";
-import StarterPackModal from "../components/Modal/StarterPackModal";
+import StarterPackModal from "../components/Modal/StarterPack/StarterPackModal";
 
 const Marketplace: NextPage = () => {
   const { accounts, connectWallet } = useContext(ConnectionContext);
